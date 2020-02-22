@@ -13,19 +13,14 @@ pub const CG_HAVE_STAT64_STRUCT: u32 = 0;
 pub const CG_SIZEOF_SIZE: u32 = 32;
 pub const CG_SIZE_DATATYPE: &'static [u8; 3usize] = b"I4\0";
 pub const FORTRAN_DEFAULT_INTEGER_C_INT64_T: u32 = 0;
-
-pub const CG_MODE_READ: CG_MODE = 0;
-pub const CG_MODE_WRITE: CG_MODE = 1;
-pub const CG_MODE_MODIFY: CG_MODE = 2;
-pub const CG_MODE_CLOSED: CG_MODE = 3;
-pub type CG_MODE = u32; // custom
-
-pub const CG_FILE_NONE: CG_FILE = 0;
-pub const CG_FILE_ADF: CG_FILE = 1;
-pub const CG_FILE_HDF5: CG_FILE = 2;
-pub const CG_FILE_ADF2: CG_FILE = 3;
-pub type CG_FILE = u32; // custom
-
+pub const CG_MODE_READ: u32 = 0;
+pub const CG_MODE_WRITE: u32 = 1;
+pub const CG_MODE_MODIFY: u32 = 2;
+pub const CG_MODE_CLOSED: u32 = 3;
+pub const CG_FILE_NONE: u32 = 0;
+pub const CG_FILE_ADF: u32 = 1;
+pub const CG_FILE_HDF5: u32 = 2;
+pub const CG_FILE_ADF2: u32 = 3;
 pub const CG_OK: u32 = 0;
 pub const CG_ERROR: u32 = 1;
 pub const CG_NODE_NOT_FOUND: u32 = 2;
@@ -484,7 +479,7 @@ extern "C" {
 extern "C" {
     pub fn cg_open(
         filename: *const ::std::os::raw::c_char,
-        mode: CG_MODE,
+        mode: ::std::os::raw::c_int,
         fn_: *mut ::std::os::raw::c_int,
     ) -> ::std::os::raw::c_int;
 }
