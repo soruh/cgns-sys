@@ -1,6 +1,6 @@
 [package]
 name = "libcgns-sys"
-version = "3.4.0"
+version = "4.1.0"
 authors = ["soruh <mail@soruh.de>"]
 edition = "2018"
 links = "cgns"
