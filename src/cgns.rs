@@ -470,12 +470,23 @@ extern "C" {
     pub static mut AverageInterfaceTypeName: [*const ::std::os::raw::c_char; 8usize];
 }
 extern "C" {
+    /// Check for a valid CGNS file
+    /// modes: [ r w m ]
+    /// arguments: 
+    /// -> `char `(`const`): undefined
+    /// <- `file_type`(`int*`): Type of CGNS file. This will typically be either `CG_FILE_ADF` or `CG_FILE_HDF5` depending on the underlying file format. However, note that when built in 32-bit, there is also an option to create a Version 2.5 CGNS file by setting the file type to `CG_FILE_ADF2`.
     pub fn cg_is_cgns(
         filename: *const ::std::os::raw::c_char,
         file_type: *mut ::std::os::raw::c_int,
     ) -> ::std::os::raw::c_int;
 }
 extern "C" {
+    /// Open a CGNS file
+    /// modes: [ r w m ]
+    /// arguments: 
+    /// -> `filename`(`char*`): Name of the CGNS file, including path name if necessary. There is no limit on the length of this character variable.
+    /// -> `mode`(`int`): Mode used for opening the file. The modes currently supported are `CG_MODE_READ`, `CG_MODE_WRITE`, and `CG_MODE_MODIFY`.
+    /// <- `fn`(`int*`): CGNS file index number.
     pub fn cg_open(
         filename: *const ::std::os::raw::c_char,
         mode: ::std::os::raw::c_int,
@@ -483,18 +494,39 @@ extern "C" {
     ) -> ::std::os::raw::c_int;
 }
 extern "C" {
+    /// Get CGNS file version
+    /// modes: [ r w m ]
+    /// arguments: 
+    /// -> `fn`(`int`): CGNS file index number.
+    /// <- `version`(`float*`): CGNS version number.
     pub fn cg_version(fn_: ::std::os::raw::c_int, FileVersion: *mut f32) -> ::std::os::raw::c_int;
 }
 extern "C" {
+    /// Get CGNS file precision
+    /// modes: [ r w m ]
+    /// arguments: 
+    /// -> `fn`(`int`): CGNS file index number.
+    /// <- `precision`(`int*`): Precision used to write the CGNS file. The return value will be one of 32 (32-bit), 64 (64-bit), or 0 if not known.
     pub fn cg_precision(
         fn_: ::std::os::raw::c_int,
         precision: *mut ::std::os::raw::c_int,
     ) -> ::std::os::raw::c_int;
 }
 extern "C" {
+    /// Close a CGNS file
+    /// modes: [ r w m ]
+    /// arguments: 
+    /// -> `fn`(`int`): CGNS file index number.
     pub fn cg_close(fn_: ::std::os::raw::c_int) -> ::std::os::raw::c_int;
 }
 extern "C" {
+    /// Save the open CGNS file
+    /// modes: [ r w m ]
+    /// arguments: 
+    /// -> `fn`(`int`): CGNS file index number.
+    /// -> `char `(`const`): undefined
+    /// -> `file_type`(`int`): Type of CGNS file. This will typically be either `CG_FILE_ADF` or `CG_FILE_HDF5` depending on the underlying file format. However, note that when built in 32-bit, there is also an option to create a Version 2.5 CGNS file by setting the file type to `CG_FILE_ADF2`.
+    /// -> `follow_links`(`int`): This flag determines whether links are left intact when saving a CGNS file. If non-zero, then the links will be removed and the data associated with the linked files copied to the new file.
     pub fn cg_save_as(
         fn_: ::std::os::raw::c_int,
         filename: *const ::std::os::raw::c_char,
@@ -503,30 +535,55 @@ extern "C" {
     ) -> ::std::os::raw::c_int;
 }
 extern "C" {
+    /// Set default file type
+    /// modes: [ r w m ]
+    /// arguments: 
+    /// -> `file_type`(`int`): Type of CGNS file. This will typically be either `CG_FILE_ADF` or `CG_FILE_HDF5` depending on the underlying file format. However, note that when built in 32-bit, there is also an option to create a Version 2.5 CGNS file by setting the file type to `CG_FILE_ADF2`.
     pub fn cg_set_file_type(file_type: ::std::os::raw::c_int) -> ::std::os::raw::c_int;
 }
 extern "C" {
+    /// Get file type for open CGNS file
+    /// modes: [ r w m ]
+    /// arguments: 
+    /// -> `fn`(`int`): CGNS file index number.
+    /// <- `file_type`(`int*`): Type of CGNS file. This will typically be either `CG_FILE_ADF` or `CG_FILE_HDF5` depending on the underlying file format. However, note that when built in 32-bit, there is also an option to create a Version 2.5 CGNS file by setting the file type to `CG_FILE_ADF2`.
     pub fn cg_get_file_type(
         fn_: ::std::os::raw::c_int,
         file_type: *mut ::std::os::raw::c_int,
     ) -> ::std::os::raw::c_int;
 }
 extern "C" {
+    /// get the root node ID
+    /// modes: [ r w m ]
+    /// arguments: 
+    /// -> `fn`(`int`): CGNS file index number.
+    /// <- `rootid`(`double*`): Root node identifier for the CGNS file.
     pub fn cg_root_id(fn_: ::std::os::raw::c_int, rootid: *mut f64) -> ::std::os::raw::c_int;
 }
 extern "C" {
+    /// modes: [ r w m ]
+    /// arguments: 
+    /// -> `fn`(`int`): CGNS file index number.
+    /// <- `cgio_num`(`int*`): CGIO indentifier for the CGNS file.
     pub fn cg_get_cgio(
         fn_: ::std::os::raw::c_int,
         cgio_num: *mut ::std::os::raw::c_int,
     ) -> ::std::os::raw::c_int;
 }
 extern "C" {
+    /// modes: [ r w m ]
+    /// arguments: 
+    /// -> `option`(`int`): The option to configure, currently one of `CG_CONFIG_ERROR`, `CG_CONFIG_COMPRESS`, `CG_CONFIG_SET_PATH`, `CG_CONFIG_ADD_PATH`, `CG_CONFIG_FILE_TYPE`, `CG_CONFIG_RIND_INDEX`, `CG_CONFIG_HDF5_COMPRESS`, or `CG_CONFIG_HDF5_MPI_COMM` as defined in <i>cgnslib.h</i>.
+    /// -> `value`(`void*`): The value to set, type cast as `void *`.
     pub fn cg_configure(
         what: ::std::os::raw::c_int,
         value: *mut ::std::os::raw::c_void,
     ) -> ::std::os::raw::c_int;
 }
 extern "C" {
+    /// modes: [ r w m ]
+    /// arguments: 
+    /// -> `(`(`void`): undefined
     pub fn cg_error_handler(
         arg1: ::std::option::Option<
             unsafe extern "C" fn(arg1: ::std::os::raw::c_int, arg2: *mut ::std::os::raw::c_char),
@@ -534,15 +591,28 @@ extern "C" {
     ) -> ::std::os::raw::c_int;
 }
 extern "C" {
+    /// modes: [ r w m ]
+    /// arguments: 
+    /// -> `compress`(`int`): CGNS compress (rewrite) setting.
     pub fn cg_set_compress(compress: ::std::os::raw::c_int) -> ::std::os::raw::c_int;
 }
 extern "C" {
+    /// modes: [ r w m ]
+    /// arguments: 
+    /// <- `compress`(`int*`): CGNS compress (rewrite) setting.
     pub fn cg_get_compress(compress: *mut ::std::os::raw::c_int) -> ::std::os::raw::c_int;
 }
 extern "C" {
+    /// modes: [ r w m ]
+    /// arguments: 
+    /// -> `char `(`const`): undefined
     pub fn cg_set_path(path: *const ::std::os::raw::c_char) -> ::std::os::raw::c_int;
 }
 extern "C" {
+    /// Add to the CGNS link search path
+    /// modes: [ r w m ]
+    /// arguments: 
+    /// -> `char `(`const`): undefined
     pub fn cg_add_path(path: *const ::std::os::raw::c_char) -> ::std::os::raw::c_int;
 }
 extern "C" {
@@ -644,12 +714,23 @@ extern "C" {
     ) -> *const ::std::os::raw::c_char;
 }
 extern "C" {
+    /// modes: [ r - m ]
+    /// arguments: 
+    /// -> `fn`(`int`): CGNS file index number.
+    /// <- `nbases`(`int*`): Number of bases present in the CGNS file `fn`.
     pub fn cg_nbases(
         fn_: ::std::os::raw::c_int,
         nbases: *mut ::std::os::raw::c_int,
     ) -> ::std::os::raw::c_int;
 }
 extern "C" {
+    /// modes: [ r - m ]
+    /// arguments: 
+    /// -> `fn`(`int`): CGNS file index number.
+    /// -> `B`(`int`): Base index number, where 1 &le; `B` &le; `nbases`.
+    /// <- `basename`(`char*`): Name of the base.
+    /// <- `cell_dim`(`int*`): Dimension of the cells; 3 for volume cells, 2 for surface cells and 1 for line cells.
+    /// <- `phys_dim`(`int*`): Number of coordinates required to define a vector in the field.
     pub fn cg_base_read(
         file_number: ::std::os::raw::c_int,
         B: ::std::os::raw::c_int,
@@ -666,6 +747,13 @@ extern "C" {
     ) -> ::std::os::raw::c_int;
 }
 extern "C" {
+    /// modes: [ - w m ]
+    /// arguments: 
+    /// -> `fn`(`int`): CGNS file index number.
+    /// -> `basename`(`char*`): Name of the base.
+    /// -> `cell_dim`(`int`): Dimension of the cells; 3 for volume cells, 2 for surface cells and 1 for line cells.
+    /// -> `phys_dim`(`int`): Number of coordinates required to define a vector in the field.
+    /// <- `B`(`int*`): Base index number, where 1 &le; `B` &le; `nbases`.
     pub fn cg_base_write(
         file_number: ::std::os::raw::c_int,
         basename: *const ::std::os::raw::c_char,
@@ -675,6 +763,12 @@ extern "C" {
     ) -> ::std::os::raw::c_int;
 }
 extern "C" {
+    /// Get the cell dimension for the CGNS base
+    /// modes: [ r - m ]
+    /// arguments: 
+    /// -> `fn`(`int`): CGNS file index number.
+    /// -> `B`(`int`): Base index number, where 1 &le; `B` &le; `nbases`.
+    /// <- `cell_dim`(`int*`): Dimension of the cells; 3 for volume cells, 2 for surface cells and 1 for line cells.
     pub fn cg_cell_dim(
         fn_: ::std::os::raw::c_int,
         B: ::std::os::raw::c_int,
@@ -682,6 +776,11 @@ extern "C" {
     ) -> ::std::os::raw::c_int;
 }
 extern "C" {
+    /// modes: [ r - m ]
+    /// arguments: 
+    /// -> `fn`(`int`): CGNS file index number.
+    /// -> `B`(`int`): Base index number, where 1 &le; `B` &le; `nbases`.
+    /// <- `nzones`(`int*`): Number of zones present in base `B`.
     pub fn cg_nzones(
         fn_: ::std::os::raw::c_int,
         B: ::std::os::raw::c_int,
@@ -689,6 +788,13 @@ extern "C" {
     ) -> ::std::os::raw::c_int;
 }
 extern "C" {
+    /// modes: [ r - m ]
+    /// arguments: 
+    /// -> `fn`(`int`): CGNS file index number.
+    /// -> `B`(`int`): Base index number, where 1 &le; `B` &le; `nbases`.
+    /// -> `Z`(`int`): Zone index number, where 1 &le; `Z` &le; `nzones`.
+    /// <- `zonename`(`char*`): Name of the zone.
+    /// <- `size`(`cgsize_t*`): Number of vertices, cells, and boundary vertices in each (<i>index</i>)-dimension.  For structured grids, the dimensions have unit stride in the array (e.g., `[NVertexI, NVertexJ, NVertexK, NCellI, NCellJ, NCellK, NBoundVertexI, NBoundVertexJ, NBoundVertexK]`). <p> Note that for unstructured grids, the number of cells is the number of highest order elements. Thus, in three dimensions it's the number of 3-D cells, and in two dimensions it's the number of 2-D cells. <p> Also for unstructured grids, if the nodes are sorted between internal nodes and boundary nodes, the optional parameter `NBoundVertex` must be set equal to the number of boundary nodes. By default, `NBoundVertex` equals zero, meaning that the nodes are unsorted. <p> Note that a non-zero value for `NBoundVertex` only applies to unstructured grids. For structured grids, the `NBoundVertex` parameter always equals 0 in all directions.<br><br> <table cellspacing=0 cellpadding=0 noborder>
     pub fn cg_zone_read(
         fn_: ::std::os::raw::c_int,
         B: ::std::os::raw::c_int,
@@ -698,6 +804,12 @@ extern "C" {
     ) -> ::std::os::raw::c_int;
 }
 extern "C" {
+    /// modes: [ r - m ]
+    /// arguments: 
+    /// -> `fn`(`int`): CGNS file index number.
+    /// -> `B`(`int`): Base index number, where 1 &le; `B` &le; `nbases`.
+    /// -> `Z`(`int`): Zone index number, where 1 &le; `Z` &le; `nzones`.
+    /// <- `zonetype`(`ZoneType_t*`): undefined
     pub fn cg_zone_type(
         file_number: ::std::os::raw::c_int,
         B: ::std::os::raw::c_int,
@@ -714,6 +826,14 @@ extern "C" {
     ) -> ::std::os::raw::c_int;
 }
 extern "C" {
+    /// modes: [ - w m ]
+    /// arguments: 
+    /// -> `fn`(`int`): CGNS file index number.
+    /// -> `B`(`int`): Base index number, where 1 &le; `B` &le; `nbases`.
+    /// -> `zonename`(`char*`): Name of the zone.
+    /// -> `size`(`cgsize_t*`): Number of vertices, cells, and boundary vertices in each (<i>index</i>)-dimension.  For structured grids, the dimensions have unit stride in the array (e.g., `[NVertexI, NVertexJ, NVertexK, NCellI, NCellJ, NCellK, NBoundVertexI, NBoundVertexJ, NBoundVertexK]`). <p> Note that for unstructured grids, the number of cells is the number of highest order elements. Thus, in three dimensions it's the number of 3-D cells, and in two dimensions it's the number of 2-D cells. <p> Also for unstructured grids, if the nodes are sorted between internal nodes and boundary nodes, the optional parameter `NBoundVertex` must be set equal to the number of boundary nodes. By default, `NBoundVertex` equals zero, meaning that the nodes are unsorted. <p> Note that a non-zero value for `NBoundVertex` only applies to unstructured grids. For structured grids, the `NBoundVertex` parameter always equals 0 in all directions.<br><br> <table cellspacing=0 cellpadding=0 noborder>
+    /// -> `zonetype`(`ZoneType_t`): undefined
+    /// <- `Z`(`int*`): Zone index number, where 1 &le; `Z` &le; `nzones`.
     pub fn cg_zone_write(
         fn_: ::std::os::raw::c_int,
         B: ::std::os::raw::c_int,
@@ -724,6 +844,13 @@ extern "C" {
     ) -> ::std::os::raw::c_int;
 }
 extern "C" {
+    /// Get the index dimension for the CGNS zone
+    /// modes: [ r - m ]
+    /// arguments: 
+    /// -> `fn`(`int`): CGNS file index number.
+    /// -> `B`(`int`): Base index number, where 1 &le; `B` &le; `nbases`.
+    /// -> `Z`(`int`): Zone index number, where 1 &le; `Z` &le; `nzones`.
+    /// <- `index_dim`(`int*`): undefined
     pub fn cg_index_dim(
         fn_: ::std::os::raw::c_int,
         B: ::std::os::raw::c_int,
@@ -732,6 +859,11 @@ extern "C" {
     ) -> ::std::os::raw::c_int;
 }
 extern "C" {
+    /// modes: [ r - m ]
+    /// arguments: 
+    /// -> `fn`(`int`): CGNS file index number.
+    /// -> `B`(`int`): Base index number, where 1 &le; `B` &le; `nbases`.
+    /// <- `nfamilies`(`int*`): Number of families in base `B`.
     pub fn cg_nfamilies(
         file_number: ::std::os::raw::c_int,
         B: ::std::os::raw::c_int,
@@ -739,6 +871,14 @@ extern "C" {
     ) -> ::std::os::raw::c_int;
 }
 extern "C" {
+    /// modes: [ r - m ]
+    /// arguments: 
+    /// -> `fn`(`int`): CGNS file index number.
+    /// -> `B`(`int`): Base index number, where 1 &le; `B` &le; `nbases`.
+    /// -> `Fam`(`int`): Family index number, where 1 &le; `Fam` &le; `nfamilies`.
+    /// <- `FamilyName`(`char*`): Name of the family.
+    /// <- `nFamBC`(`int*`): Number of boundary conditions for this family. This should be either 0 or 1.
+    /// <- `nGeo`(`int*`): Number of geometry references for this family.
     pub fn cg_family_read(
         file_number: ::std::os::raw::c_int,
         B: ::std::os::raw::c_int,
@@ -749,6 +889,12 @@ extern "C" {
     ) -> ::std::os::raw::c_int;
 }
 extern "C" {
+    /// modes: [ - w m ]
+    /// arguments: 
+    /// -> `fn`(`int`): CGNS file index number.
+    /// -> `B`(`int`): Base index number, where 1 &le; `B` &le; `nbases`.
+    /// -> `FamilyName`(`char*`): Name of the family.
+    /// <- `Fam`(`int*`): Family index number, where 1 &le; `Fam` &le; `nfamilies`.
     pub fn cg_family_write(
         file_number: ::std::os::raw::c_int,
         B: ::std::os::raw::c_int,
@@ -757,6 +903,12 @@ extern "C" {
     ) -> ::std::os::raw::c_int;
 }
 extern "C" {
+    /// modes: [ r - m ]
+    /// arguments: 
+    /// -> `fn`(`int`): CGNS file index number.
+    /// -> `B`(`int`): Base index number, where 1 &le; `B` &le; `nbases`.
+    /// -> `Fam`(`int`): Family index number, where 1 &le; `Fam` &le; `nfamilies`.
+    /// <- `nNames`(`int*`): Number of `FamilyName_t` nodes for this family.
     pub fn cg_nfamily_names(
         file_number: ::std::os::raw::c_int,
         B: ::std::os::raw::c_int,
@@ -765,6 +917,15 @@ extern "C" {
     ) -> ::std::os::raw::c_int;
 }
 extern "C" {
+    /// Read multiple family names under Family_t
+    /// modes: [ r - m ]
+    /// arguments: 
+    /// -> `fn`(`int`): CGNS file index number.
+    /// -> `B`(`int`): Base index number, where 1 &le; `B` &le; `nbases`.
+    /// -> `Fam`(`int`): Family index number, where 1 &le; `Fam` &le; `nfamilies`.
+    /// -> `N`(`int`): Family name index number, where 1 &le; `N` &le; `nNames`.
+    /// <- `NodeName`(`char*`): Name of the `FamilyName_t` node. `FamilyParent` is used to refer to the parent family of the `Family_t` node.
+    /// <- `FamilyName`(`char*`): Name of the family.
     pub fn cg_family_name_read(
         file_number: ::std::os::raw::c_int,
         B: ::std::os::raw::c_int,
@@ -775,6 +936,13 @@ extern "C" {
     ) -> ::std::os::raw::c_int;
 }
 extern "C" {
+    /// modes: [ - w m ]
+    /// arguments: 
+    /// -> `fn`(`int`): CGNS file index number.
+    /// -> `B`(`int`): Base index number, where 1 &le; `B` &le; `nbases`.
+    /// -> `Fam`(`int`): Family index number, where 1 &le; `Fam` &le; `nfamilies`.
+    /// -> `NodeName`(`char*`): Name of the `FamilyName_t` node. `FamilyParent` is used to refer to the parent family of the `Family_t` node.
+    /// -> `FamilyName`(`char*`): Name of the family.
     pub fn cg_family_name_write(
         file_number: ::std::os::raw::c_int,
         B: ::std::os::raw::c_int,
@@ -817,15 +985,30 @@ extern "C" {
     ) -> ::std::os::raw::c_int;
 }
 extern "C" {
+    /// modes: [ r - m ]
+    /// arguments: 
+    /// <- `FamilyName`(`char*`): Family name.
     pub fn cg_famname_read(family_name: *mut ::std::os::raw::c_char) -> ::std::os::raw::c_int;
 }
 extern "C" {
+    /// modes: [ - w m ]
+    /// arguments: 
+    /// -> `FamilyName`(`char*`): Family name.
     pub fn cg_famname_write(family_name: *const ::std::os::raw::c_char) -> ::std::os::raw::c_int;
 }
 extern "C" {
+    /// modes: [ r - m ]
+    /// arguments: 
+    /// <- `nNames`(`int*`): Number of additional family names.
     pub fn cg_nmultifam(nfams: *mut ::std::os::raw::c_int) -> ::std::os::raw::c_int;
 }
 extern "C" {
+    /// Read multiple family names
+    /// modes: [ r - m ]
+    /// arguments: 
+    /// -> `N`(`int`): Family name index number, where 1 &le; `N` &le; `nNames`.
+    /// <- `NodeName`(`char*`): Node name.
+    /// <- `FamilyName`(`char*`): Family name.
     pub fn cg_multifam_read(
         N: ::std::os::raw::c_int,
         name: *mut ::std::os::raw::c_char,
@@ -833,12 +1016,25 @@ extern "C" {
     ) -> ::std::os::raw::c_int;
 }
 extern "C" {
+    /// modes: [ - w m ]
+    /// arguments: 
+    /// -> `NodeName`(`char*`): Node name.
+    /// -> `FamilyName`(`char*`): Family name.
     pub fn cg_multifam_write(
         name: *const ::std::os::raw::c_char,
         family: *const ::std::os::raw::c_char,
     ) -> ::std::os::raw::c_int;
 }
 extern "C" {
+    /// Read boundary condition type for a family
+    /// modes: [ r - m ]
+    /// arguments: 
+    /// -> `fn`(`int`): CGNS file index number.
+    /// -> `B`(`int`): Base index number, where 1 &le; `B` &le; `nbases`.
+    /// -> `Fam`(`int`): Family index number, where 1 &le; `Fam` &le; `nfamilies`.
+    /// -> `BC`(`int`): Family boundary condition index number. This must be equal to 1.
+    /// <- `FamBCName`(`char*`): Name of the `FamilyBC_t` node.
+    /// <- `BCType`(`BCType_t*`): Boundary condition type for the family. See the eligible types for `BCType_t` in the <a href="general.html#typedefs">Typedefs</a> section.
     pub fn cg_fambc_read(
         file_number: ::std::os::raw::c_int,
         B: ::std::os::raw::c_int,
@@ -849,6 +1045,14 @@ extern "C" {
     ) -> ::std::os::raw::c_int;
 }
 extern "C" {
+    /// modes: [ - w m ]
+    /// arguments: 
+    /// -> `fn`(`int`): CGNS file index number.
+    /// -> `B`(`int`): Base index number, where 1 &le; `B` &le; `nbases`.
+    /// -> `Fam`(`int`): Family index number, where 1 &le; `Fam` &le; `nfamilies`.
+    /// -> `FamBCName`(`char*`): Name of the `FamilyBC_t` node.
+    /// -> `BCType`(`BCType_t`): Boundary condition type for the family. See the eligible types for `BCType_t` in the <a href="general.html#typedefs">Typedefs</a> section.
+    /// <- `BC`(`int*`): Family boundary condition index number. This must be equal to 1.
     pub fn cg_fambc_write(
         file_number: ::std::os::raw::c_int,
         B: ::std::os::raw::c_int,
@@ -873,6 +1077,16 @@ extern "C" {
     ) -> ::std::os::raw::c_int;
 }
 extern "C" {
+    /// modes: [ r - m ]
+    /// arguments: 
+    /// -> `fn`(`int`): CGNS file index number.
+    /// -> `B`(`int`): Base index number, where 1 &le; `B` &le; `nbases`.
+    /// -> `Fam`(`int`): Family index number, where 1 &le; `Fam` &le; `nfamilies`.
+    /// -> `G`(`int`): Geometry reference index number, where 1 &le; `G` &le; `nGeo`.
+    /// <- `GeoName`(`char*`): Name of `GeometryReference_t` node.
+    /// <- `FileName`(`char**`): Name of geometry file.
+    /// <- `CADSystem`(`char*`): Geometry format.
+    /// <- `nparts`(`int*`): Number of geometry entities.
     pub fn cg_geo_read(
         file_number: ::std::os::raw::c_int,
         B: ::std::os::raw::c_int,
@@ -885,6 +1099,15 @@ extern "C" {
     ) -> ::std::os::raw::c_int;
 }
 extern "C" {
+    /// modes: [ - w m ]
+    /// arguments: 
+    /// -> `fn`(`int`): CGNS file index number.
+    /// -> `B`(`int`): Base index number, where 1 &le; `B` &le; `nbases`.
+    /// -> `Fam`(`int`): Family index number, where 1 &le; `Fam` &le; `nfamilies`.
+    /// -> `GeoName`(`char*`): Name of `GeometryReference_t` node.
+    /// -> `FileName`(`char*`): Name of geometry file.
+    /// -> `CADSystem`(`char*`): Geometry format.
+    /// <- `G`(`int*`): Geometry reference index number, where 1 &le; `G` &le; `nGeo`.
     pub fn cg_geo_write(
         file_number: ::std::os::raw::c_int,
         B: ::std::os::raw::c_int,
@@ -913,6 +1136,15 @@ extern "C" {
     ) -> ::std::os::raw::c_int;
 }
 extern "C" {
+    /// Get geometry entity name
+    /// modes: [ r - m ]
+    /// arguments: 
+    /// -> `fn`(`int`): CGNS file index number.
+    /// -> `B`(`int`): Base index number, where 1 &le; `B` &le; `nbases`.
+    /// -> `Fam`(`int`): Family index number, where 1 &le; `Fam` &le; `nfamilies`.
+    /// -> `G`(`int`): Geometry reference index number, where 1 &le; `G` &le; `nGeo`.
+    /// -> `P`(`int`): Geometry entity index number, where 1 &le; `P` &le; `nparts`.
+    /// <- `PartName`(`char*`): Name of a geometry entity in the file `FileName`.
     pub fn cg_part_read(
         file_number: ::std::os::raw::c_int,
         B: ::std::os::raw::c_int,
@@ -923,6 +1155,14 @@ extern "C" {
     ) -> ::std::os::raw::c_int;
 }
 extern "C" {
+    /// modes: [ - w m ]
+    /// arguments: 
+    /// -> `fn`(`int`): CGNS file index number.
+    /// -> `B`(`int`): Base index number, where 1 &le; `B` &le; `nbases`.
+    /// -> `Fam`(`int`): Family index number, where 1 &le; `Fam` &le; `nfamilies`.
+    /// -> `G`(`int`): Geometry reference index number, where 1 &le; `G` &le; `nGeo`.
+    /// -> `PartName`(`char*`): Name of a geometry entity in the file `FileName`.
+    /// <- `P`(`int*`): Geometry entity index number, where 1 &le; `P` &le; `nparts`.
     pub fn cg_part_write(
         file_number: ::std::os::raw::c_int,
         B: ::std::os::raw::c_int,
@@ -947,6 +1187,12 @@ extern "C" {
     ) -> ::std::os::raw::c_int;
 }
 extern "C" {
+    /// modes: [ - w m ]
+    /// arguments: 
+    /// -> `fn`(`int`): CGNS file index number.
+    /// -> `B`(`int`): Base index number, where 1 &le; `B` &le; `nbases`.
+    /// -> `Z`(`int`): Zone index number, where 1 &le; `Z` &le; `nzones`.
+    /// <- `ngrids`(`int*`): Number of `GridCoordinates_t` nodes for zone `Z`.
     pub fn cg_ngrids(
         file_number: ::std::os::raw::c_int,
         B: ::std::os::raw::c_int,
@@ -955,6 +1201,13 @@ extern "C" {
     ) -> ::std::os::raw::c_int;
 }
 extern "C" {
+    /// modes: [ r - m ]
+    /// arguments: 
+    /// -> `fn`(`int`): CGNS file index number.
+    /// -> `B`(`int`): Base index number, where 1 &le; `B` &le; `nbases`.
+    /// -> `Z`(`int`): Zone index number, where 1 &le; `Z` &le; `nzones`.
+    /// -> `G`(`int`): Grid index number, where 1 &le; `G` &le; `ngrids`.
+    /// <- `GridCoordName`(`char*`): undefined
     pub fn cg_grid_read(
         file_number: ::std::os::raw::c_int,
         B: ::std::os::raw::c_int,
@@ -964,6 +1217,13 @@ extern "C" {
     ) -> ::std::os::raw::c_int;
 }
 extern "C" {
+    /// modes: [ - w m ]
+    /// arguments: 
+    /// -> `fn`(`int`): CGNS file index number.
+    /// -> `B`(`int`): Base index number, where 1 &le; `B` &le; `nbases`.
+    /// -> `Z`(`int`): Zone index number, where 1 &le; `Z` &le; `nzones`.
+    /// -> `GridCoordName`(`char*`): undefined
+    /// <- `G`(`int*`): Grid index number, where 1 &le; `G` &le; `ngrids`.
     pub fn cg_grid_write(
         file_number: ::std::os::raw::c_int,
         B: ::std::os::raw::c_int,
@@ -993,6 +1253,12 @@ extern "C" {
     ) -> ::std::os::raw::c_int;
 }
 extern "C" {
+    /// modes: [ r - m ]
+    /// arguments: 
+    /// -> `fn`(`int`): CGNS file index number.
+    /// -> `B`(`int`): Base index number, where 1 &le; `B` &le; `nbases`.
+    /// -> `Z`(`int`): Zone index number, where 1 &le; `Z` &le; `nzones`.
+    /// <- `ncoords`(`int*`): Number of coordinate arrays for zone `Z`.
     pub fn cg_ncoords(
         fn_: ::std::os::raw::c_int,
         B: ::std::os::raw::c_int,
@@ -1001,6 +1267,14 @@ extern "C" {
     ) -> ::std::os::raw::c_int;
 }
 extern "C" {
+    /// modes: [ r - m ]
+    /// arguments: 
+    /// -> `fn`(`int`): CGNS file index number.
+    /// -> `B`(`int`): Base index number, where 1 &le; `B` &le; `nbases`.
+    /// -> `Z`(`int`): Zone index number, where 1 &le; `Z` &le; `nzones`.
+    /// -> `C`(`int`): Coordinate array index number, where 1 &le; `C` &le; `ncoords`.
+    /// <- `datatype`(`DataType_t*`): Data type of the coordinate array written to the file. Admissible data types for a coordinate array are `RealSingle` and `RealDouble`.
+    /// <- `coordname`(`char*`): Name of the coordinate array. It is strongly advised to use the <a href="../sids/dataname.html#dataname_grid">SIDS nomenclature conventions</a> when naming the coordinate arrays to insure file compatibility.
     pub fn cg_coord_info(
         fn_: ::std::os::raw::c_int,
         B: ::std::os::raw::c_int,
@@ -1011,6 +1285,16 @@ extern "C" {
     ) -> ::std::os::raw::c_int;
 }
 extern "C" {
+    /// modes: [ r - m ]
+    /// arguments: 
+    /// -> `fn`(`int`): CGNS file index number.
+    /// -> `B`(`int`): Base index number, where 1 &le; `B` &le; `nbases`.
+    /// -> `Z`(`int`): Zone index number, where 1 &le; `Z` &le; `nzones`.
+    /// -> `coordname`(`char*`): Name of the coordinate array. It is strongly advised to use the <a href="../sids/dataname.html#dataname_grid">SIDS nomenclature conventions</a> when naming the coordinate arrays to insure file compatibility.
+    /// -> `mem_datatype`(`DataType_t`): Data type of an array in memory. Admissible data types for a coordinate array are `RealSingle` and `RealDouble`..
+    /// -> `range_min`(`cgsize_t*`): Lower range index in file (eg., `imin, jmin, kmin`).
+    /// -> `range_max`(`cgsize_t*`): Upper range index in file (eg., `imax, jmax, kmax`).
+    /// <- `coord_array`(`void*`): Array of coordinate values.
     pub fn cg_coord_read(
         fn_: ::std::os::raw::c_int,
         B: ::std::os::raw::c_int,
@@ -1023,6 +1307,21 @@ extern "C" {
     ) -> ::std::os::raw::c_int;
 }
 extern "C" {
+    /// Read subset of grid coordinates to a shaped array
+    /// modes: [ r - m ]
+    /// arguments: 
+    /// -> `fn`(`int`): CGNS file index number.
+    /// -> `B`(`int`): Base index number, where 1 &le; `B` &le; `nbases`.
+    /// -> `Z`(`int`): Zone index number, where 1 &le; `Z` &le; `nzones`.
+    /// -> `coordname`(`char*`): Name of the coordinate array. It is strongly advised to use the <a href="../sids/dataname.html#dataname_grid">SIDS nomenclature conventions</a> when naming the coordinate arrays to insure file compatibility.
+    /// -> `range_min`(`cgsize_t*`): Lower range index in file (eg., `imin, jmin, kmin`).
+    /// -> `range_max`(`cgsize_t*`): Upper range index in file (eg., `imax, jmax, kmax`).
+    /// -> `mem_datatype`(`DataType_t`): Data type of an array in memory. Admissible data types for a coordinate array are `RealSingle` and `RealDouble`..
+    /// -> `mem_rank`(`int`): Number of dimensions of array in memory.
+    /// -> `mem_dimensions`(`cgsize_t*`): Dimensions of array in memory.
+    /// -> `mem_range_min`(`cgsize_t*`): Lower range index in memory (eg., `imin, jmin, kmin`).
+    /// -> `mem_range_max`(`cgsize_t*`): Upper range index in memory (eg., `imax, jmax, kmax`).
+    /// <- `coord_array`(`void*`): Array of coordinate values.
     pub fn cg_coord_general_read(
         fn_: ::std::os::raw::c_int,
         B: ::std::os::raw::c_int,
@@ -1048,6 +1347,15 @@ extern "C" {
     ) -> ::std::os::raw::c_int;
 }
 extern "C" {
+    /// modes: [ - w m ]
+    /// arguments: 
+    /// -> `fn`(`int`): CGNS file index number.
+    /// -> `B`(`int`): Base index number, where 1 &le; `B` &le; `nbases`.
+    /// -> `Z`(`int`): Zone index number, where 1 &le; `Z` &le; `nzones`.
+    /// -> `datatype`(`DataType_t`): Data type of the coordinate array written to the file. Admissible data types for a coordinate array are `RealSingle` and `RealDouble`.
+    /// -> `coordname`(`char*`): Name of the coordinate array. It is strongly advised to use the <a href="../sids/dataname.html#dataname_grid">SIDS nomenclature conventions</a> when naming the coordinate arrays to insure file compatibility.
+    /// -> `coord_array`(`void*`): Array of coordinate values.
+    /// <- `C`(`int*`): Coordinate array index number, where 1 &le; `C` &le; `ncoords`.
     pub fn cg_coord_write(
         fn_: ::std::os::raw::c_int,
         B: ::std::os::raw::c_int,
@@ -1059,6 +1367,17 @@ extern "C" {
     ) -> ::std::os::raw::c_int;
 }
 extern "C" {
+    /// modes: [ - w m ]
+    /// arguments: 
+    /// -> `fn`(`int`): CGNS file index number.
+    /// -> `B`(`int`): Base index number, where 1 &le; `B` &le; `nbases`.
+    /// -> `Z`(`int`): Zone index number, where 1 &le; `Z` &le; `nzones`.
+    /// -> `datatype`(`DataType_t`): Data type of the coordinate array written to the file. Admissible data types for a coordinate array are `RealSingle` and `RealDouble`.
+    /// -> `coordname`(`char*`): Name of the coordinate array. It is strongly advised to use the <a href="../sids/dataname.html#dataname_grid">SIDS nomenclature conventions</a> when naming the coordinate arrays to insure file compatibility.
+    /// -> `range_min`(`cgsize_t*`): Lower range index in file (eg., `imin, jmin, kmin`).
+    /// -> `range_max`(`cgsize_t*`): Upper range index in file (eg., `imax, jmax, kmax`).
+    /// -> `coord_array`(`void*`): Array of coordinate values.
+    /// <- `C`(`int*`): Coordinate array index number, where 1 &le; `C` &le; `ncoords`.
     pub fn cg_coord_partial_write(
         fn_: ::std::os::raw::c_int,
         B: ::std::os::raw::c_int,
@@ -1072,6 +1391,22 @@ extern "C" {
     ) -> ::std::os::raw::c_int;
 }
 extern "C" {
+    /// modes: [ - w m ]
+    /// arguments: 
+    /// -> `fn`(`int`): CGNS file index number.
+    /// -> `B`(`int`): Base index number, where 1 &le; `B` &le; `nbases`.
+    /// -> `Z`(`int`): Zone index number, where 1 &le; `Z` &le; `nzones`.
+    /// -> `coordname`(`char*`): Name of the coordinate array. It is strongly advised to use the <a href="../sids/dataname.html#dataname_grid">SIDS nomenclature conventions</a> when naming the coordinate arrays to insure file compatibility.
+    /// -> `datatype`(`DataType_t`): Data type of the coordinate array written to the file. Admissible data types for a coordinate array are `RealSingle` and `RealDouble`.
+    /// -> `range_min`(`cgsize_t*`): Lower range index in file (eg., `imin, jmin, kmin`).
+    /// -> `range_max`(`cgsize_t*`): Upper range index in file (eg., `imax, jmax, kmax`).
+    /// -> `mem_datatype`(`DataType_t`): Data type of an array in memory. Admissible data types for a coordinate array are `RealSingle` and `RealDouble`..
+    /// -> `mem_rank`(`int`): Number of dimensions of array in memory.
+    /// -> `mem_dimensions`(`cgsize_t*`): Dimensions of array in memory.
+    /// -> `mem_range_min`(`cgsize_t*`): Lower range index in memory (eg., `imin, jmin, kmin`).
+    /// -> `mem_range_max`(`cgsize_t*`): Upper range index in memory (eg., `imax, jmax, kmax`).
+    /// -> `coord_array`(`void*`): Array of coordinate values.
+    /// <- `C`(`int*`): Coordinate array index number, where 1 &le; `C` &le; `ncoords`.
     pub fn cg_coord_general_write(
         fn_: ::std::os::raw::c_int,
         B: ::std::os::raw::c_int,
@@ -1090,6 +1425,12 @@ extern "C" {
     ) -> ::std::os::raw::c_int;
 }
 extern "C" {
+    /// modes: [ r - m ]
+    /// arguments: 
+    /// -> `fn`(`int`): CGNS file index number.
+    /// -> `B`(`int`): Base index number, where 1 &le; `B` &le; `nbases`.
+    /// -> `Z`(`int`): Zone index number, where 1 &le; `Z` &le; `nzones`.
+    /// <- `nsections`(`int*`): Number of element sections.
     pub fn cg_nsections(
         file_number: ::std::os::raw::c_int,
         B: ::std::os::raw::c_int,
@@ -1098,6 +1439,18 @@ extern "C" {
     ) -> ::std::os::raw::c_int;
 }
 extern "C" {
+    /// modes: [ r - m ]
+    /// arguments: 
+    /// -> `fn`(`int`): CGNS file index number.
+    /// -> `B`(`int`): Base index number, where 1 &le; `B` &le; `nbases`.
+    /// -> `Z`(`int`): Zone index number, where 1 &le; `Z` &le; `nzones`.
+    /// -> `S`(`int`): Element section index, where 1 &le; `S` &le; `nsections`.
+    /// <- `ElementSectionName`(`char*`): Name of the `Elements_t` node.
+    /// <- `type`(`ElementType_t*`): Type of element. See the eligible types for `ElementType_t` in the <a href="general.html#typedefs">Typedefs</a> section.
+    /// <- `start`(`cgsize_t*`): Index of first element in the section.
+    /// <- `end`(`cgsize_t*`): Index of last element in the section.
+    /// <- `nbndry`(`int*`): Index of last boundary element in the section. Set to zero if the elements are unsorted.
+    /// <- `parent_flag`(`int*`): Flag indicating if the parent data are defined. If the parent data exist, `parent_flag` is set to 1; otherwise it is set to 0.
     pub fn cg_section_read(
         file_number: ::std::os::raw::c_int,
         B: ::std::os::raw::c_int,
@@ -1112,6 +1465,14 @@ extern "C" {
     ) -> ::std::os::raw::c_int;
 }
 extern "C" {
+    /// modes: [ r - m ]
+    /// arguments: 
+    /// -> `fn`(`int`): CGNS file index number.
+    /// -> `B`(`int`): Base index number, where 1 &le; `B` &le; `nbases`.
+    /// -> `Z`(`int`): Zone index number, where 1 &le; `Z` &le; `nzones`.
+    /// -> `S`(`int`): Element section index, where 1 &le; `S` &le; `nsections`.
+    /// <- `Elements`(`cgsize_t*`): Element connectivity data. The element connectivity order is given in <a href="../sids/conv.html#unstructgrid">Element Numbering Conventions</a>.
+    /// <- `ParentData`(`cgsize_t*`): For boundary or interface elements, this array contains information on the cell(s) and cell face(s) sharing the element. If you do not need to read the `ParentData` when reading the `ElementData`, you may set the value to `NULL`.
     pub fn cg_elements_read(
         file_number: ::std::os::raw::c_int,
         B: ::std::os::raw::c_int,
@@ -1122,6 +1483,15 @@ extern "C" {
     ) -> ::std::os::raw::c_int;
 }
 extern "C" {
+    /// modes: [ r - m ]
+    /// arguments: 
+    /// -> `fn`(`int`): CGNS file index number.
+    /// -> `B`(`int`): Base index number, where 1 &le; `B` &le; `nbases`.
+    /// -> `Z`(`int`): Zone index number, where 1 &le; `Z` &le; `nzones`.
+    /// -> `S`(`int`): Element section index, where 1 &le; `S` &le; `nsections`.
+    /// <- `Elements`(`cgsize_t*`): Element connectivity data. The element connectivity order is given in <a href="../sids/conv.html#unstructgrid">Element Numbering Conventions</a>.
+    /// <- `ConnectOffset`(`cgsize_t*`): Element connectivity offset data. This is required for `NGON_n`, `NFACE_n` and `MIXED` according to <a href="../sids/gridflow.html#Elements">Elements_t Structure Definition</a>.
+    /// <- `ParentData`(`cgsize_t*`): For boundary or interface elements, this array contains information on the cell(s) and cell face(s) sharing the element. If you do not need to read the `ParentData` when reading the `ElementData`, you may set the value to `NULL`.
     pub fn cg_poly_elements_read(
         file_number: ::std::os::raw::c_int,
         B: ::std::os::raw::c_int,
@@ -1133,6 +1503,18 @@ extern "C" {
     ) -> ::std::os::raw::c_int;
 }
 extern "C" {
+    /// modes: [ - w m ]
+    /// arguments: 
+    /// -> `fn`(`int`): CGNS file index number.
+    /// -> `B`(`int`): Base index number, where 1 &le; `B` &le; `nbases`.
+    /// -> `Z`(`int`): Zone index number, where 1 &le; `Z` &le; `nzones`.
+    /// -> `ElementSectionName`(`char*`): Name of the `Elements_t` node.
+    /// -> `type`(`ElementType_t`): Type of element. See the eligible types for `ElementType_t` in the <a href="general.html#typedefs">Typedefs</a> section.
+    /// -> `start`(`cgsize_t`): Index of first element in the section.
+    /// -> `end`(`cgsize_t`): Index of last element in the section.
+    /// -> `nbndry`(`int`): Index of last boundary element in the section. Set to zero if the elements are unsorted.
+    /// -> `Elements`(`cgsize_t*`): Element connectivity data. The element connectivity order is given in <a href="../sids/conv.html#unstructgrid">Element Numbering Conventions</a>.
+    /// <- `S`(`int*`): Element section index, where 1 &le; `S` &le; `nsections`.
     pub fn cg_section_write(
         file_number: ::std::os::raw::c_int,
         B: ::std::os::raw::c_int,
@@ -1147,6 +1529,19 @@ extern "C" {
     ) -> ::std::os::raw::c_int;
 }
 extern "C" {
+    /// modes: [ - w m ]
+    /// arguments: 
+    /// -> `fn`(`int`): CGNS file index number.
+    /// -> `B`(`int`): Base index number, where 1 &le; `B` &le; `nbases`.
+    /// -> `Z`(`int`): Zone index number, where 1 &le; `Z` &le; `nzones`.
+    /// -> `ElementSectionName`(`char*`): Name of the `Elements_t` node.
+    /// -> `type`(`ElementType_t`): Type of element. See the eligible types for `ElementType_t` in the <a href="general.html#typedefs">Typedefs</a> section.
+    /// -> `start`(`cgsize_t`): Index of first element in the section.
+    /// -> `end`(`cgsize_t`): Index of last element in the section.
+    /// -> `nbndry`(`int`): Index of last boundary element in the section. Set to zero if the elements are unsorted.
+    /// -> `Elements`(`cgsize_t*`): Element connectivity data. The element connectivity order is given in <a href="../sids/conv.html#unstructgrid">Element Numbering Conventions</a>.
+    /// -> `ConnectOffset`(`cgsize_t*`): Element connectivity offset data. This is required for `NGON_n`, `NFACE_n` and `MIXED` according to <a href="../sids/gridflow.html#Elements">Elements_t Structure Definition</a>.
+    /// <- `S`(`int*`): Element section index, where 1 &le; `S` &le; `nsections`.
     pub fn cg_poly_section_write(
         file_number: ::std::os::raw::c_int,
         B: ::std::os::raw::c_int,
@@ -1162,6 +1557,13 @@ extern "C" {
     ) -> ::std::os::raw::c_int;
 }
 extern "C" {
+    /// modes: [ - w m ]
+    /// arguments: 
+    /// -> `fn`(`int`): CGNS file index number.
+    /// -> `B`(`int`): Base index number, where 1 &le; `B` &le; `nbases`.
+    /// -> `Z`(`int`): Zone index number, where 1 &le; `Z` &le; `nzones`.
+    /// -> `S`(`int`): Element section index, where 1 &le; `S` &le; `nsections`.
+    /// -> `ParentData`(`cgsize_t*`): For boundary or interface elements, this array contains information on the cell(s) and cell face(s) sharing the element. If you do not need to read the `ParentData` when reading the `ElementData`, you may set the value to `NULL`.
     pub fn cg_parent_data_write(
         file_number: ::std::os::raw::c_int,
         B: ::std::os::raw::c_int,
@@ -1171,9 +1573,21 @@ extern "C" {
     ) -> ::std::os::raw::c_int;
 }
 extern "C" {
+    /// Get number of nodes for an element type
+    /// modes: [ r w m ]
+    /// arguments: 
+    /// -> `type`(`ElementType_t`): Type of element. See the eligible types for `ElementType_t` in the <a href="general.html#typedefs">Typedefs</a> section.
+    /// <- `npe`(`int*`): Number of nodes for an element of type `type`.
     pub fn cg_npe(type_: ElementType_t, npe: *mut ::std::os::raw::c_int) -> ::std::os::raw::c_int;
 }
 extern "C" {
+    /// modes: [ r - m ]
+    /// arguments: 
+    /// -> `fn`(`int`): CGNS file index number.
+    /// -> `B`(`int`): Base index number, where 1 &le; `B` &le; `nbases`.
+    /// -> `Z`(`int`): Zone index number, where 1 &le; `Z` &le; `nzones`.
+    /// -> `S`(`int`): Element section index, where 1 &le; `S` &le; `nsections`.
+    /// <- `ElementDataSize`(`cgsize_t*`): Number of element connectivity data values.
     pub fn cg_ElementDataSize(
         file_number: ::std::os::raw::c_int,
         B: ::std::os::raw::c_int,
@@ -1183,6 +1597,17 @@ extern "C" {
     ) -> ::std::os::raw::c_int;
 }
 extern "C" {
+    /// modes: [ - w m ]
+    /// arguments: 
+    /// -> `fn`(`int`): CGNS file index number.
+    /// -> `B`(`int`): Base index number, where 1 &le; `B` &le; `nbases`.
+    /// -> `Z`(`int`): Zone index number, where 1 &le; `Z` &le; `nzones`.
+    /// -> `ElementSectionName`(`char*`): Name of the `Elements_t` node.
+    /// -> `type`(`ElementType_t`): Type of element. See the eligible types for `ElementType_t` in the <a href="general.html#typedefs">Typedefs</a> section.
+    /// -> `start`(`cgsize_t`): Index of first element in the section.
+    /// -> `end`(`cgsize_t`): Index of last element in the section.
+    /// -> `nbndry`(`int`): Index of last boundary element in the section. Set to zero if the elements are unsorted.
+    /// <- `S`(`int*`): Element section index, where 1 &le; `S` &le; `nsections`.
     pub fn cg_section_partial_write(
         file_number: ::std::os::raw::c_int,
         B: ::std::os::raw::c_int,
@@ -1196,6 +1621,12 @@ extern "C" {
     ) -> ::std::os::raw::c_int;
 }
 extern "C" {
+    /// modes: [ - w m ]
+    /// arguments: 
+    /// -> `fn`(`int`): CGNS file index number.
+    /// -> `B`(`int`): Base index number, where 1 &le; `B` &le; `nbases`.
+    /// -> `Z`(`int`): Zone index number, where 1 &le; `Z` &le; `nzones`.
+    /// -> `S`(`int`): Element section index, where 1 &le; `S` &le; `nsections`.
     pub fn cg_elements_partial_write(
         fn_: ::std::os::raw::c_int,
         B: ::std::os::raw::c_int,
@@ -1207,6 +1638,13 @@ extern "C" {
     ) -> ::std::os::raw::c_int;
 }
 extern "C" {
+    /// modes: [ - w m ]
+    /// arguments: 
+    /// -> `fn`(`int`): CGNS file index number.
+    /// -> `B`(`int`): Base index number, where 1 &le; `B` &le; `nbases`.
+    /// -> `Z`(`int`): Zone index number, where 1 &le; `Z` &le; `nzones`.
+    /// -> `S`(`int`): Element section index, where 1 &le; `S` &le; `nsections`.
+    /// -> `ConnectOffset`(`cgsize_t*`): Element connectivity offset data. This is required for `NGON_n`, `NFACE_n` and `MIXED` according to <a href="../sids/gridflow.html#Elements">Elements_t Structure Definition</a>.
     pub fn cg_poly_elements_partial_write(
         fn_: ::std::os::raw::c_int,
         B: ::std::os::raw::c_int,
@@ -1219,6 +1657,15 @@ extern "C" {
     ) -> ::std::os::raw::c_int;
 }
 extern "C" {
+    /// modes: [ - w m ]
+    /// arguments: 
+    /// -> `fn`(`int`): CGNS file index number.
+    /// -> `B`(`int`): Base index number, where 1 &le; `B` &le; `nbases`.
+    /// -> `Z`(`int`): Zone index number, where 1 &le; `Z` &le; `nzones`.
+    /// -> `S`(`int`): Element section index, where 1 &le; `S` &le; `nsections`.
+    /// -> `start`(`cgsize_t`): Index of first element in the section.
+    /// -> `end`(`cgsize_t`): Index of last element in the section.
+    /// -> `ParentData`(`cgsize_t*`): For boundary or interface elements, this array contains information on the cell(s) and cell face(s) sharing the element. If you do not need to read the `ParentData` when reading the `ElementData`, you may set the value to `NULL`.
     pub fn cg_parent_data_partial_write(
         fn_: ::std::os::raw::c_int,
         B: ::std::os::raw::c_int,
@@ -1230,6 +1677,16 @@ extern "C" {
     ) -> ::std::os::raw::c_int;
 }
 extern "C" {
+    /// modes: [ r - m ]
+    /// arguments: 
+    /// -> `fn`(`int`): CGNS file index number.
+    /// -> `B`(`int`): Base index number, where 1 &le; `B` &le; `nbases`.
+    /// -> `Z`(`int`): Zone index number, where 1 &le; `Z` &le; `nzones`.
+    /// -> `S`(`int`): Element section index, where 1 &le; `S` &le; `nsections`.
+    /// -> `start`(`cgsize_t`): Index of first element in the section.
+    /// -> `end`(`cgsize_t`): Index of last element in the section.
+    /// <- `Elements`(`cgsize_t*`): Element connectivity data. The element connectivity order is given in <a href="../sids/conv.html#unstructgrid">Element Numbering Conventions</a>.
+    /// <- `ParentData`(`cgsize_t*`): For boundary or interface elements, this array contains information on the cell(s) and cell face(s) sharing the element. If you do not need to read the `ParentData` when reading the `ElementData`, you may set the value to `NULL`.
     pub fn cg_elements_partial_read(
         file_number: ::std::os::raw::c_int,
         B: ::std::os::raw::c_int,
@@ -1242,6 +1699,17 @@ extern "C" {
     ) -> ::std::os::raw::c_int;
 }
 extern "C" {
+    /// modes: [ r - m ]
+    /// arguments: 
+    /// -> `fn`(`int`): CGNS file index number.
+    /// -> `B`(`int`): Base index number, where 1 &le; `B` &le; `nbases`.
+    /// -> `Z`(`int`): Zone index number, where 1 &le; `Z` &le; `nzones`.
+    /// -> `S`(`int`): Element section index, where 1 &le; `S` &le; `nsections`.
+    /// -> `start`(`cgsize_t`): Index of first element in the section.
+    /// -> `end`(`cgsize_t`): Index of last element in the section.
+    /// <- `Elements`(`cgsize_t*`): Element connectivity data. The element connectivity order is given in <a href="../sids/conv.html#unstructgrid">Element Numbering Conventions</a>.
+    /// <- `ConnectOffset`(`cgsize_t*`): Element connectivity offset data. This is required for `NGON_n`, `NFACE_n` and `MIXED` according to <a href="../sids/gridflow.html#Elements">Elements_t Structure Definition</a>.
+    /// <- `ParentData`(`cgsize_t*`): For boundary or interface elements, this array contains information on the cell(s) and cell face(s) sharing the element. If you do not need to read the `ParentData` when reading the `ElementData`, you may set the value to `NULL`.
     pub fn cg_poly_elements_partial_read(
         file_number: ::std::os::raw::c_int,
         B: ::std::os::raw::c_int,
@@ -1255,6 +1723,15 @@ extern "C" {
     ) -> ::std::os::raw::c_int;
 }
 extern "C" {
+    /// modes: [ r - m ]
+    /// arguments: 
+    /// -> `fn`(`int`): CGNS file index number.
+    /// -> `B`(`int`): Base index number, where 1 &le; `B` &le; `nbases`.
+    /// -> `Z`(`int`): Zone index number, where 1 &le; `Z` &le; `nzones`.
+    /// -> `S`(`int`): Element section index, where 1 &le; `S` &le; `nsections`.
+    /// -> `start`(`cgsize_t`): Index of first element in the section.
+    /// -> `end`(`cgsize_t`): Index of last element in the section.
+    /// <- `ElementDataSize`(`cgsize_t*`): Number of element connectivity data values.
     pub fn cg_ElementPartialSize(
         file_number: ::std::os::raw::c_int,
         B: ::std::os::raw::c_int,
@@ -1266,6 +1743,12 @@ extern "C" {
     ) -> ::std::os::raw::c_int;
 }
 extern "C" {
+    /// modes: [ r - m ]
+    /// arguments: 
+    /// -> `fn`(`int`): CGNS file index number.
+    /// -> `B`(`int`): Base index number, where 1 &le; `B` &le; `nbases`.
+    /// -> `Z`(`int`): Zone index number, where 1 &le; `Z` &le; `nzones`.
+    /// <- `nsols`(`int*`): Number of flow solutions for zone `Z`.
     pub fn cg_nsols(
         fn_: ::std::os::raw::c_int,
         B: ::std::os::raw::c_int,
@@ -1274,6 +1757,14 @@ extern "C" {
     ) -> ::std::os::raw::c_int;
 }
 extern "C" {
+    /// modes: [ r - m ]
+    /// arguments: 
+    /// -> `fn`(`int`): CGNS file index number.
+    /// -> `B`(`int`): Base index number, where 1 &le; `B` &le; `nbases`.
+    /// -> `Z`(`int`): Zone index number, where 1 &le; `Z` &le; `nzones`.
+    /// -> `S`(`int`): Flow solution index number, where 1 &le; `S` &le; `nsols`.
+    /// <- `solname`(`char*`): Name of the flow solution.
+    /// <- `location`(`GridLocation_t*`): Grid location where the solution is recorded. The current admissible locations are `Vertex`, `CellCenter`, `IFaceCenter`, `JFaceCenter`, and `KFaceCenter`.
     pub fn cg_sol_info(
         fn_: ::std::os::raw::c_int,
         B: ::std::os::raw::c_int,
@@ -1293,6 +1784,14 @@ extern "C" {
     ) -> ::std::os::raw::c_int;
 }
 extern "C" {
+    /// modes: [ - w m ]
+    /// arguments: 
+    /// -> `fn`(`int`): CGNS file index number.
+    /// -> `B`(`int`): Base index number, where 1 &le; `B` &le; `nbases`.
+    /// -> `Z`(`int`): Zone index number, where 1 &le; `Z` &le; `nzones`.
+    /// -> `solname`(`char*`): Name of the flow solution.
+    /// -> `location`(`GridLocation_t`): Grid location where the solution is recorded. The current admissible locations are `Vertex`, `CellCenter`, `IFaceCenter`, `JFaceCenter`, and `KFaceCenter`.
+    /// <- `S`(`int*`): Flow solution index number, where 1 &le; `S` &le; `nsols`.
     pub fn cg_sol_write(
         fn_: ::std::os::raw::c_int,
         B: ::std::os::raw::c_int,
@@ -1303,6 +1802,14 @@ extern "C" {
     ) -> ::std::os::raw::c_int;
 }
 extern "C" {
+    /// modes: [ r - m ]
+    /// arguments: 
+    /// -> `fn`(`int`): CGNS file index number.
+    /// -> `B`(`int`): Base index number, where 1 &le; `B` &le; `nbases`.
+    /// -> `Z`(`int`): Zone index number, where 1 &le; `Z` &le; `nzones`.
+    /// -> `S`(`int`): Flow solution index number, where 1 &le; `S` &le; `nsols`.
+    /// <- `data_dim`(`int*`): Number of dimensions defining the solution data. If a point set has been defined, this will be 1, otherwise this will be the current zone index dimension.</td>
+    /// <- `dim_vals`(`cgsize_t*`): The array of `data_dim` dimensions for the solution data.</td>
     pub fn cg_sol_size(
         fn_: ::std::os::raw::c_int,
         B: ::std::os::raw::c_int,
@@ -1313,6 +1820,14 @@ extern "C" {
     ) -> ::std::os::raw::c_int;
 }
 extern "C" {
+    /// modes: [ r - m ]
+    /// arguments: 
+    /// -> `fn`(`int`): CGNS file index number.
+    /// -> `B`(`int`): Base index number, where 1 &le; `B` &le; `nbases`.
+    /// -> `Z`(`int`): Zone index number, where 1 &le; `Z` &le; `nzones`.
+    /// -> `S`(`int`): Flow solution index number, where 1 &le; `S` &le; `nsols`.
+    /// <- `ptset_type`(`PointSetType_t*`): Type of point set defining the interface in the current solution; either `PointRange` or `PointList`.
+    /// <- `npnts`(`cgsize_t*`): Number of points defining the interface in the current solution. For a `ptset_type` of `PointRange`, `npnts` is always two. For a `ptset_type` of `PointList`, `npnts` is the number of points in the `PointList`.
     pub fn cg_sol_ptset_info(
         fn_: ::std::os::raw::c_int,
         B: ::std::os::raw::c_int,
@@ -1323,6 +1838,13 @@ extern "C" {
     ) -> ::std::os::raw::c_int;
 }
 extern "C" {
+    /// modes: [ r - m ]
+    /// arguments: 
+    /// -> `fn`(`int`): CGNS file index number.
+    /// -> `B`(`int`): Base index number, where 1 &le; `B` &le; `nbases`.
+    /// -> `Z`(`int`): Zone index number, where 1 &le; `Z` &le; `nzones`.
+    /// -> `S`(`int`): Flow solution index number, where 1 &le; `S` &le; `nsols`.
+    /// <- `pnts`(`cgsize_t*`): Array of points defining the interface in the current solution.
     pub fn cg_sol_ptset_read(
         fn_: ::std::os::raw::c_int,
         B: ::std::os::raw::c_int,
@@ -1332,6 +1854,17 @@ extern "C" {
     ) -> ::std::os::raw::c_int;
 }
 extern "C" {
+    /// modes: [ - w m ]
+    /// arguments: 
+    /// -> `fn`(`int`): CGNS file index number.
+    /// -> `B`(`int`): Base index number, where 1 &le; `B` &le; `nbases`.
+    /// -> `Z`(`int`): Zone index number, where 1 &le; `Z` &le; `nzones`.
+    /// -> `char `(`const`): undefined
+    /// -> `location`(`GridLocation_t`): Grid location where the solution is recorded. The current admissible locations are `Vertex`, `CellCenter`, `IFaceCenter`, `JFaceCenter`, and `KFaceCenter`.
+    /// -> `ptset_type`(`PointSetType_t`): Type of point set defining the interface in the current solution; either `PointRange` or `PointList`.
+    /// -> `npnts`(`cgsize_t`): Number of points defining the interface in the current solution. For a `ptset_type` of `PointRange`, `npnts` is always two. For a `ptset_type` of `PointList`, `npnts` is the number of points in the `PointList`.
+    /// -> `cgsize_t `(`const`): undefined
+    /// <- `S`(`int*`): Flow solution index number, where 1 &le; `S` &le; `nsols`.
     pub fn cg_sol_ptset_write(
         fn_: ::std::os::raw::c_int,
         B: ::std::os::raw::c_int,
@@ -1345,6 +1878,13 @@ extern "C" {
     ) -> ::std::os::raw::c_int;
 }
 extern "C" {
+    /// modes: [ r - m ]
+    /// arguments: 
+    /// -> `fn`(`int`): CGNS file index number.
+    /// -> `B`(`int`): Base index number, where 1 &le; `B` &le; `nbases`.
+    /// -> `Z`(`int`): Zone index number, where 1 &le; `Z` &le; `nzones`.
+    /// -> `S`(`int`): Flow solution index number, where 1 &le; `S` &le; `nsols`.
+    /// <- `nfields`(`int*`): Number of data arrays in flow solution `S`.
     pub fn cg_nfields(
         fn_: ::std::os::raw::c_int,
         B: ::std::os::raw::c_int,
@@ -1354,6 +1894,15 @@ extern "C" {
     ) -> ::std::os::raw::c_int;
 }
 extern "C" {
+    /// modes: [ r - m ]
+    /// arguments: 
+    /// -> `fn`(`int`): CGNS file index number.
+    /// -> `B`(`int`): Base index number, where 1 &le; `B` &le; `nbases`.
+    /// -> `Z`(`int`): Zone index number, where 1 &le; `Z` &le; `nzones`.
+    /// -> `S`(`int`): Flow solution index number, where 1 &le; `S` &le; `nsols`.
+    /// -> `F`(`int`): Solution array index number, where 1 &le; `F` &le; `nfields`.
+    /// <- `datatype`(`DataType_t*`): Data type of the solution array written to the file. Admissible data types for a solution array are `Integer`, `LongInteger`, `RealSingle`, and `RealDouble`.
+    /// <- `fieldname`(`char*`): Name of the solution array. It is strongly advised to use the <a href="../sids/dataname.html#dataname_flow">SIDS nomenclature conventions</a> when naming the solution arrays to insure file compatibility.
     pub fn cg_field_info(
         fn_: ::std::os::raw::c_int,
         B: ::std::os::raw::c_int,
@@ -1365,6 +1914,17 @@ extern "C" {
     ) -> ::std::os::raw::c_int;
 }
 extern "C" {
+    /// modes: [ r - m ]
+    /// arguments: 
+    /// -> `fn`(`int`): CGNS file index number.
+    /// -> `B`(`int`): Base index number, where 1 &le; `B` &le; `nbases`.
+    /// -> `Z`(`int`): Zone index number, where 1 &le; `Z` &le; `nzones`.
+    /// -> `S`(`int`): Flow solution index number, where 1 &le; `S` &le; `nsols`.
+    /// -> `fieldname`(`char*`): Name of the solution array. It is strongly advised to use the <a href="../sids/dataname.html#dataname_flow">SIDS nomenclature conventions</a> when naming the solution arrays to insure file compatibility.
+    /// -> `mem_datatype`(`DataType_t`): Data type of an array in memory. Admissible data types for a solution array are `Integer`, `LongInteger`, `RealSingle`, and `RealDouble`.
+    /// -> `range_min`(`cgsize_t*`): Lower range index in file (eg., `imin, jmin, kmin`).
+    /// -> `range_max`(`cgsize_t*`): Upper range index in file (eg., `imax, jmax, kmax`).
+    /// <- `solution_array`(`void*`): Array of solution values.
     pub fn cg_field_read(
         fn_: ::std::os::raw::c_int,
         B: ::std::os::raw::c_int,
@@ -1378,6 +1938,22 @@ extern "C" {
     ) -> ::std::os::raw::c_int;
 }
 extern "C" {
+    /// Read subset of flow solution to a shaped array
+    /// modes: [ r - m ]
+    /// arguments: 
+    /// -> `fn`(`int`): CGNS file index number.
+    /// -> `B`(`int`): Base index number, where 1 &le; `B` &le; `nbases`.
+    /// -> `Z`(`int`): Zone index number, where 1 &le; `Z` &le; `nzones`.
+    /// -> `S`(`int`): Flow solution index number, where 1 &le; `S` &le; `nsols`.
+    /// -> `fieldname`(`char*`): Name of the solution array. It is strongly advised to use the <a href="../sids/dataname.html#dataname_flow">SIDS nomenclature conventions</a> when naming the solution arrays to insure file compatibility.
+    /// -> `range_min`(`cgsize_t*`): Lower range index in file (eg., `imin, jmin, kmin`).
+    /// -> `range_max`(`cgsize_t*`): Upper range index in file (eg., `imax, jmax, kmax`).
+    /// -> `mem_datatype`(`DataType_t`): Data type of an array in memory. Admissible data types for a solution array are `Integer`, `LongInteger`, `RealSingle`, and `RealDouble`.
+    /// -> `mem_rank`(`int`): Number of dimensions of array in memory.
+    /// -> `mem_dimensions`(`cgsize_t*`): Dimensions of array in memory.
+    /// -> `mem_range_min`(`cgsize_t*`): Lower range index in memory (eg., `imin, jmin, kmin`).
+    /// -> `mem_range_max`(`cgsize_t*`): Upper range index in memory (eg., `imax, jmax, kmax`).
+    /// <- `solution_array`(`void*`): Array of solution values.
     pub fn cg_field_general_read(
         fn_: ::std::os::raw::c_int,
         B: ::std::os::raw::c_int,
@@ -1405,6 +1981,16 @@ extern "C" {
     ) -> ::std::os::raw::c_int;
 }
 extern "C" {
+    /// modes: [ - w m ]
+    /// arguments: 
+    /// -> `fn`(`int`): CGNS file index number.
+    /// -> `B`(`int`): Base index number, where 1 &le; `B` &le; `nbases`.
+    /// -> `Z`(`int`): Zone index number, where 1 &le; `Z` &le; `nzones`.
+    /// -> `S`(`int`): Flow solution index number, where 1 &le; `S` &le; `nsols`.
+    /// -> `datatype`(`DataType_t`): Data type of the solution array written to the file. Admissible data types for a solution array are `Integer`, `LongInteger`, `RealSingle`, and `RealDouble`.
+    /// -> `fieldname`(`char*`): Name of the solution array. It is strongly advised to use the <a href="../sids/dataname.html#dataname_flow">SIDS nomenclature conventions</a> when naming the solution arrays to insure file compatibility.
+    /// -> `solution_array`(`void*`): Array of solution values.
+    /// <- `F`(`int*`): Solution array index number, where 1 &le; `F` &le; `nfields`.
     pub fn cg_field_write(
         fn_: ::std::os::raw::c_int,
         B: ::std::os::raw::c_int,
@@ -1417,6 +2003,18 @@ extern "C" {
     ) -> ::std::os::raw::c_int;
 }
 extern "C" {
+    /// modes: [ - w m ]
+    /// arguments: 
+    /// -> `fn`(`int`): CGNS file index number.
+    /// -> `B`(`int`): Base index number, where 1 &le; `B` &le; `nbases`.
+    /// -> `Z`(`int`): Zone index number, where 1 &le; `Z` &le; `nzones`.
+    /// -> `S`(`int`): Flow solution index number, where 1 &le; `S` &le; `nsols`.
+    /// -> `datatype`(`DataType_t`): Data type of the solution array written to the file. Admissible data types for a solution array are `Integer`, `LongInteger`, `RealSingle`, and `RealDouble`.
+    /// -> `fieldname`(`char*`): Name of the solution array. It is strongly advised to use the <a href="../sids/dataname.html#dataname_flow">SIDS nomenclature conventions</a> when naming the solution arrays to insure file compatibility.
+    /// -> `range_min`(`cgsize_t*`): Lower range index in file (eg., `imin, jmin, kmin`).
+    /// -> `range_max`(`cgsize_t*`): Upper range index in file (eg., `imax, jmax, kmax`).
+    /// -> `solution_array`(`void*`): Array of solution values.
+    /// <- `F`(`int*`): Solution array index number, where 1 &le; `F` &le; `nfields`.
     pub fn cg_field_partial_write(
         fn_: ::std::os::raw::c_int,
         B: ::std::os::raw::c_int,
@@ -1431,6 +2029,23 @@ extern "C" {
     ) -> ::std::os::raw::c_int;
 }
 extern "C" {
+    /// modes: [ - w m ]
+    /// arguments: 
+    /// -> `fn`(`int`): CGNS file index number.
+    /// -> `B`(`int`): Base index number, where 1 &le; `B` &le; `nbases`.
+    /// -> `Z`(`int`): Zone index number, where 1 &le; `Z` &le; `nzones`.
+    /// -> `S`(`int`): Flow solution index number, where 1 &le; `S` &le; `nsols`.
+    /// -> `fieldname`(`char*`): Name of the solution array. It is strongly advised to use the <a href="../sids/dataname.html#dataname_flow">SIDS nomenclature conventions</a> when naming the solution arrays to insure file compatibility.
+    /// -> `datatype`(`DataType_t`): Data type of the solution array written to the file. Admissible data types for a solution array are `Integer`, `LongInteger`, `RealSingle`, and `RealDouble`.
+    /// -> `range_min`(`cgsize_t*`): Lower range index in file (eg., `imin, jmin, kmin`).
+    /// -> `range_max`(`cgsize_t*`): Upper range index in file (eg., `imax, jmax, kmax`).
+    /// -> `mem_datatype`(`DataType_t`): Data type of an array in memory. Admissible data types for a solution array are `Integer`, `LongInteger`, `RealSingle`, and `RealDouble`.
+    /// -> `mem_rank`(`int`): Number of dimensions of array in memory.
+    /// -> `mem_dimensions`(`cgsize_t*`): Dimensions of array in memory.
+    /// -> `mem_range_min`(`cgsize_t*`): Lower range index in memory (eg., `imin, jmin, kmin`).
+    /// -> `mem_range_max`(`cgsize_t*`): Upper range index in memory (eg., `imax, jmax, kmax`).
+    /// -> `solution_array`(`void*`): Array of solution values.
+    /// <- `F`(`int*`): Solution array index number, where 1 &le; `F` &le; `nfields`.
     pub fn cg_field_general_write(
         fn_: ::std::os::raw::c_int,
         B: ::std::os::raw::c_int,
@@ -1450,6 +2065,12 @@ extern "C" {
     ) -> ::std::os::raw::c_int;
 }
 extern "C" {
+    /// modes: [ r - m ]
+    /// arguments: 
+    /// -> `fn`(`int`): CGNS file index number.
+    /// -> `B`(`int`): Base index number, where 1 &le; `B` &le; `nbases`.
+    /// -> `Z`(`int`): Zone index number, where 1 &le; `Z` &le; `nzones`.
+    /// <- `nsubregs`(`int*`): Number of `ZoneSubRegion_t` nodes under Zone `Z`.
     pub fn cg_nsubregs(
         fn_: ::std::os::raw::c_int,
         B: ::std::os::raw::c_int,
@@ -1458,6 +2079,19 @@ extern "C" {
     ) -> ::std::os::raw::c_int;
 }
 extern "C" {
+    /// modes: [ r - m ]
+    /// arguments: 
+    /// -> `fn`(`int`): CGNS file index number.
+    /// -> `B`(`int`): Base index number, where 1 &le; `B` &le; `nbases`.
+    /// -> `Z`(`int`): Zone index number, where 1 &le; `Z` &le; `nzones`.
+    /// -> `S`(`int`): ZoneSubRegion index number, where 1 &le; `S` &le; `nsubregs`.
+    /// <- `regname`(`char*`): Name of the <zz>ZoneSubRegion_t</tt> node,</td>
+    /// <- `dimension`(`int*`): Dimensionality of the subregion, 1 for lines, 2 for faces, 3 for volumes,</td>
+    /// <- `location`(`GridLocation_t*`): Grid location used in the definition of the point set. The currently admissible locations are `Vertex` and `CellCenter`.
+    /// <- `ptset_type`(`PointSetType_t*`): Type of point set defining the interface for the subregion data; either `PointRange` or `PointList`.
+    /// <- `npnts`(`cgsize_t*`): Number of points defining the interface for the subregion data. For a `ptset_type` of `PointRange`, `npnts` is always two. For a `ptset_type` of `PointList`, `npnts` is the number of points in the `PointList`.
+    /// <- `bcname_len`(`int*`): String length of `bcname`.</td>
+    /// <- `gcname_len`(`int*`): String length of `gcname`.</td>
     pub fn cg_subreg_info(
         fn_: ::std::os::raw::c_int,
         B: ::std::os::raw::c_int,
@@ -1473,6 +2107,13 @@ extern "C" {
     ) -> ::std::os::raw::c_int;
 }
 extern "C" {
+    /// modes: [ r - m ]
+    /// arguments: 
+    /// -> `fn`(`int`): CGNS file index number.
+    /// -> `B`(`int`): Base index number, where 1 &le; `B` &le; `nbases`.
+    /// -> `Z`(`int`): Zone index number, where 1 &le; `Z` &le; `nzones`.
+    /// -> `S`(`int`): ZoneSubRegion index number, where 1 &le; `S` &le; `nsubregs`.
+    /// <- `pnts`(`cgsize_t*`): Array of points defining the interface  for the subregion data.
     pub fn cg_subreg_ptset_read(
         fn_: ::std::os::raw::c_int,
         B: ::std::os::raw::c_int,
@@ -1482,6 +2123,13 @@ extern "C" {
     ) -> ::std::os::raw::c_int;
 }
 extern "C" {
+    /// modes: [ r - m ]
+    /// arguments: 
+    /// -> `fn`(`int`): CGNS file index number.
+    /// -> `B`(`int`): Base index number, where 1 &le; `B` &le; `nbases`.
+    /// -> `Z`(`int`): Zone index number, where 1 &le; `Z` &le; `nzones`.
+    /// -> `S`(`int`): ZoneSubRegion index number, where 1 &le; `S` &le; `nsubregs`.
+    /// <- `bcname`(`char*`): The name of a `BC_t` node which defines the subregion.</td>
     pub fn cg_subreg_bcname_read(
         fn_: ::std::os::raw::c_int,
         B: ::std::os::raw::c_int,
@@ -1491,6 +2139,13 @@ extern "C" {
     ) -> ::std::os::raw::c_int;
 }
 extern "C" {
+    /// modes: [ r - m ]
+    /// arguments: 
+    /// -> `fn`(`int`): CGNS file index number.
+    /// -> `B`(`int`): Base index number, where 1 &le; `B` &le; `nbases`.
+    /// -> `Z`(`int`): Zone index number, where 1 &le; `Z` &le; `nzones`.
+    /// -> `S`(`int`): ZoneSubRegion index number, where 1 &le; `S` &le; `nsubregs`.
+    /// <- `gcname`(`char*`): The name of a `GridConnectivity_t` or `GridConnectivity1to1_t` node which defines the subregion.</td>
     pub fn cg_subreg_gcname_read(
         fn_: ::std::os::raw::c_int,
         B: ::std::os::raw::c_int,
@@ -1500,6 +2155,18 @@ extern "C" {
     ) -> ::std::os::raw::c_int;
 }
 extern "C" {
+    /// modes: [ - w m ]
+    /// arguments: 
+    /// -> `fn`(`int`): CGNS file index number.
+    /// -> `B`(`int`): Base index number, where 1 &le; `B` &le; `nbases`.
+    /// -> `Z`(`int`): Zone index number, where 1 &le; `Z` &le; `nzones`.
+    /// -> `char `(`const`): undefined
+    /// -> `dimension`(`int`): Dimensionality of the subregion, 1 for lines, 2 for faces, 3 for volumes,</td>
+    /// -> `location`(`GridLocation_t`): Grid location used in the definition of the point set. The currently admissible locations are `Vertex` and `CellCenter`.
+    /// -> `ptset_type`(`PointSetType_t`): Type of point set defining the interface for the subregion data; either `PointRange` or `PointList`.
+    /// -> `npnts`(`cgsize_t`): Number of points defining the interface for the subregion data. For a `ptset_type` of `PointRange`, `npnts` is always two. For a `ptset_type` of `PointList`, `npnts` is the number of points in the `PointList`.
+    /// -> `cgsize_t `(`const`): undefined
+    /// <- `S`(`int*`): ZoneSubRegion index number, where 1 &le; `S` &le; `nsubregs`.
     pub fn cg_subreg_ptset_write(
         fn_: ::std::os::raw::c_int,
         B: ::std::os::raw::c_int,
@@ -1514,6 +2181,15 @@ extern "C" {
     ) -> ::std::os::raw::c_int;
 }
 extern "C" {
+    /// modes: [ - w m ]
+    /// arguments: 
+    /// -> `fn`(`int`): CGNS file index number.
+    /// -> `B`(`int`): Base index number, where 1 &le; `B` &le; `nbases`.
+    /// -> `Z`(`int`): Zone index number, where 1 &le; `Z` &le; `nzones`.
+    /// -> `char `(`const`): undefined
+    /// -> `dimension`(`int`): Dimensionality of the subregion, 1 for lines, 2 for faces, 3 for volumes,</td>
+    /// -> `char `(`const`): undefined
+    /// <- `S`(`int*`): ZoneSubRegion index number, where 1 &le; `S` &le; `nsubregs`.
     pub fn cg_subreg_bcname_write(
         fn_: ::std::os::raw::c_int,
         B: ::std::os::raw::c_int,
@@ -1525,6 +2201,15 @@ extern "C" {
     ) -> ::std::os::raw::c_int;
 }
 extern "C" {
+    /// modes: [ - w m ]
+    /// arguments: 
+    /// -> `fn`(`int`): CGNS file index number.
+    /// -> `B`(`int`): Base index number, where 1 &le; `B` &le; `nbases`.
+    /// -> `Z`(`int`): Zone index number, where 1 &le; `Z` &le; `nzones`.
+    /// -> `char `(`const`): undefined
+    /// -> `dimension`(`int`): Dimensionality of the subregion, 1 for lines, 2 for faces, 3 for volumes,</td>
+    /// -> `char `(`const`): undefined
+    /// <- `S`(`int*`): ZoneSubRegion index number, where 1 &le; `S` &le; `nsubregs`.
     pub fn cg_subreg_gcname_write(
         fn_: ::std::os::raw::c_int,
         B: ::std::os::raw::c_int,
@@ -1536,6 +2221,12 @@ extern "C" {
     ) -> ::std::os::raw::c_int;
 }
 extern "C" {
+    /// modes: [ r - m ]
+    /// arguments: 
+    /// -> `fn`(`int`): CGNS file index number.
+    /// -> `B`(`int`): Base index number, where 1 &le; `B` &le; `nbases`.
+    /// -> `Z`(`int`): Zone index number, where 1 &le; `Z` &le; `nzones`.
+    /// <- `nzconns`(`int*`): Number of `ZoneGridConnectivity_t` nodes under Zone `Z`.
     pub fn cg_nzconns(
         fn_: ::std::os::raw::c_int,
         B: ::std::os::raw::c_int,
@@ -1544,6 +2235,13 @@ extern "C" {
     ) -> ::std::os::raw::c_int;
 }
 extern "C" {
+    /// modes: [ r - m ]
+    /// arguments: 
+    /// -> `fn`(`int`): CGNS file index number.
+    /// -> `B`(`int`): Base index number, where 1 &le; `B` &le; `nbases`.
+    /// -> `Z`(`int`): Zone index number, where 1 &le; `Z` &le; `nzones`.
+    /// -> `ZC`(`int`): Zone grid connectivity index number, where 1 &le; `ZC` &le; `nzconns`.
+    /// <- `zcname`(`char*`): Name of the `ZoneGridConnectivity_t` node,</td>
     pub fn cg_zconn_read(
         fn_: ::std::os::raw::c_int,
         B: ::std::os::raw::c_int,
@@ -1553,6 +2251,13 @@ extern "C" {
     ) -> ::std::os::raw::c_int;
 }
 extern "C" {
+    /// modes: [ - w m ]
+    /// arguments: 
+    /// -> `fn`(`int`): CGNS file index number.
+    /// -> `B`(`int`): Base index number, where 1 &le; `B` &le; `nbases`.
+    /// -> `Z`(`int`): Zone index number, where 1 &le; `Z` &le; `nzones`.
+    /// -> `char `(`const`): undefined
+    /// <- `ZC`(`int*`): Zone grid connectivity index number, where 1 &le; `ZC` &le; `nzconns`.
     pub fn cg_zconn_write(
         fn_: ::std::os::raw::c_int,
         B: ::std::os::raw::c_int,
@@ -1562,6 +2267,12 @@ extern "C" {
     ) -> ::std::os::raw::c_int;
 }
 extern "C" {
+    /// modes: [ r w m ]
+    /// arguments: 
+    /// -> `fn`(`int`): CGNS file index number.
+    /// -> `B`(`int`): Base index number, where 1 &le; `B` &le; `nbases`.
+    /// -> `Z`(`int`): Zone index number, where 1 &le; `Z` &le; `nzones`.
+    /// <- `ZC`(`int*`): Zone grid connectivity index number, where 1 &le; `ZC` &le; `nzconns`.
     pub fn cg_zconn_get(
         fn_: ::std::os::raw::c_int,
         B: ::std::os::raw::c_int,
@@ -1570,6 +2281,12 @@ extern "C" {
     ) -> ::std::os::raw::c_int;
 }
 extern "C" {
+    /// modes: [ r w m ]
+    /// arguments: 
+    /// -> `fn`(`int`): CGNS file index number.
+    /// -> `B`(`int`): Base index number, where 1 &le; `B` &le; `nbases`.
+    /// -> `Z`(`int`): Zone index number, where 1 &le; `Z` &le; `nzones`.
+    /// -> `ZC`(`int`): Zone grid connectivity index number, where 1 &le; `ZC` &le; `nzconns`.
     pub fn cg_zconn_set(
         fn_: ::std::os::raw::c_int,
         B: ::std::os::raw::c_int,
@@ -1578,6 +2295,12 @@ extern "C" {
     ) -> ::std::os::raw::c_int;
 }
 extern "C" {
+    /// modes: [ r - m ]
+    /// arguments: 
+    /// -> `fn`(`int`): CGNS file index number.
+    /// -> `B`(`int`): Base index number, where 1 &le; `B` &le; `nbases`.
+    /// -> `Z`(`int`): Zone index number, where 1 &le; `Z` &le; `nzones`.
+    /// <- `nholes`(`int*`): Number of overset holes in zone `Z`.
     pub fn cg_nholes(
         fn_: ::std::os::raw::c_int,
         B: ::std::os::raw::c_int,
@@ -1586,6 +2309,17 @@ extern "C" {
     ) -> ::std::os::raw::c_int;
 }
 extern "C" {
+    /// modes: [ r - m ]
+    /// arguments: 
+    /// -> `fn`(`int`): CGNS file index number.
+    /// -> `B`(`int`): Base index number, where 1 &le; `B` &le; `nbases`.
+    /// -> `Z`(`int`): Zone index number, where 1 &le; `Z` &le; `nzones`.
+    /// -> `I`(`int`): Overset hole index number, where 1 &le; `I` &le; `nholes`.
+    /// <- `holename`(`char*`): Name of the overset hole.
+    /// <- `location`(`GridLocation_t*`): Grid location used in the definition of the point set. The currently admissible locations are `Vertex` and `CellCenter`.
+    /// <- `ptset_type`(`PointSetType_t*`): The extent of the overset hole may be defined using a range of points or cells, or using a discrete list of all points or cells in the overset hole. If a range of points or cells is used, `ptset_type` is set to `PointRange`. When a discrete list of points or cells is used, `ptset_type` equals `PointList`.
+    /// <- `nptsets`(`int*`): Number of point sets used to define the hole. If `ptset_type` is `PointRange`, several point sets may be used. If `ptset_type` is `PointList`, only one point set is allowed.
+    /// <- `npnts`(`cgsize_t*`): Number of points (or cells) in the point set. For a `ptset_type` of `PointRange`, `npnts` is always two. For a `ptset_type` of `PointList`, `npnts` is the number of points or cells in the `PointList`.
     pub fn cg_hole_info(
         fn_: ::std::os::raw::c_int,
         B: ::std::os::raw::c_int,
@@ -1599,6 +2333,14 @@ extern "C" {
     ) -> ::std::os::raw::c_int;
 }
 extern "C" {
+    /// Read overset hole data
+    /// modes: [ r - m ]
+    /// arguments: 
+    /// -> `fn`(`int`): CGNS file index number.
+    /// -> `B`(`int`): Base index number, where 1 &le; `B` &le; `nbases`.
+    /// -> `Z`(`int`): Zone index number, where 1 &le; `Z` &le; `nzones`.
+    /// -> `I`(`int`): Overset hole index number, where 1 &le; `I` &le; `nholes`.
+    /// <- `pnts`(`cgsize_t*`): Array of points or cells in the point set.
     pub fn cg_hole_read(
         fn_: ::std::os::raw::c_int,
         B: ::std::os::raw::c_int,
@@ -1617,6 +2359,18 @@ extern "C" {
     ) -> ::std::os::raw::c_int;
 }
 extern "C" {
+    /// modes: [ - w m ]
+    /// arguments: 
+    /// -> `fn`(`int`): CGNS file index number.
+    /// -> `B`(`int`): Base index number, where 1 &le; `B` &le; `nbases`.
+    /// -> `Z`(`int`): Zone index number, where 1 &le; `Z` &le; `nzones`.
+    /// -> `holename`(`char*`): Name of the overset hole.
+    /// -> `location`(`GridLocation_t`): Grid location used in the definition of the point set. The currently admissible locations are `Vertex` and `CellCenter`.
+    /// -> `ptset_type`(`PointSetType_t`): The extent of the overset hole may be defined using a range of points or cells, or using a discrete list of all points or cells in the overset hole. If a range of points or cells is used, `ptset_type` is set to `PointRange`. When a discrete list of points or cells is used, `ptset_type` equals `PointList`.
+    /// -> `nptsets`(`int`): Number of point sets used to define the hole. If `ptset_type` is `PointRange`, several point sets may be used. If `ptset_type` is `PointList`, only one point set is allowed.
+    /// -> `npnts`(`cgsize_t`): Number of points (or cells) in the point set. For a `ptset_type` of `PointRange`, `npnts` is always two. For a `ptset_type` of `PointList`, `npnts` is the number of points or cells in the `PointList`.
+    /// -> `pnts`(`cgsize_t*`): Array of points or cells in the point set.
+    /// <- `I`(`int*`): Overset hole index number, where 1 &le; `I` &le; `nholes`.
     pub fn cg_hole_write(
         fn_: ::std::os::raw::c_int,
         B: ::std::os::raw::c_int,
@@ -1631,6 +2385,12 @@ extern "C" {
     ) -> ::std::os::raw::c_int;
 }
 extern "C" {
+    /// modes: [ r - m ]
+    /// arguments: 
+    /// -> `fn`(`int`): CGNS file index number.
+    /// -> `B`(`int`): Base index number, where 1 &le; `B` &le; `nbases`.
+    /// -> `Z`(`int`): Zone index number, where 1 &le; `Z` &le; `nzones`.
+    /// <- `nconns`(`int*`): Number of interfaces for zone `Z`.
     pub fn cg_nconns(
         fn_: ::std::os::raw::c_int,
         B: ::std::os::raw::c_int,
@@ -1639,6 +2399,22 @@ extern "C" {
     ) -> ::std::os::raw::c_int;
 }
 extern "C" {
+    /// modes: [ r - m ]
+    /// arguments: 
+    /// -> `fn`(`int`): CGNS file index number.
+    /// -> `B`(`int`): Base index number, where 1 &le; `B` &le; `nbases`.
+    /// -> `Z`(`int`): Zone index number, where 1 &le; `Z` &le; `nzones`.
+    /// -> `I`(`int`): Interface index number, where 1 &le; `I` &le; `nconns`.
+    /// <- `connectname`(`char*`): Name of the interface.
+    /// <- `location`(`GridLocation_t*`): Grid location used in the definition of the point set. The currently admissible locations are `Vertex` and `CellCenter`.
+    /// <- `connect_type`(`GridConnectivityType_t*`): Type of interface being defined. The admissible types are `Overset`, `Abutting`, and `Abutting1to1`.
+    /// <- `ptset_type`(`PointSetType_t*`): Type of point set defining the interface in the current zone; either `PointRange` or `PointList`.
+    /// <- `npnts`(`cgsize_t*`): Number of points defining the interface in the current zone. For a `ptset_type` of `PointRange`, `npnts` is always two. For a `ptset_type` of `PointList`, `npnts` is the number of points in the `PointList`.
+    /// <- `donorname`(`char*`): Name of the zone interfacing with the current zone.
+    /// <- `donor_zonetype`(`ZoneType_t*`): Type of the donor zone. The admissible types are `Structured` and `Unstructured`.
+    /// <- `donor_ptset_type`(`PointSetType_t*`): Type of point set defining the interface in the donor zone; either `PointListDonor` or `CellListDonor`.
+    /// <- `donor_datatype`(`DataType_t*`): Data type in which the donor points are stored in the file. As of Version 3.0, this value is ignored when writing, and on reading it will return either `Integer` or `LongInteger` depending on whether the file was written using 32 or 64-bit. The `donor_datatype` argument was left in these functions only for backward compatibility. The donor data is always read as `cgsize_t`.
+    /// <- `ndata_donor`(`cgsize_t*`): Number of points or cells in the current zone. These are paired with points, cells, or fractions thereof in the donor zone.
     pub fn cg_conn_info(
         file_number: ::std::os::raw::c_int,
         B: ::std::os::raw::c_int,
@@ -1657,6 +2433,16 @@ extern "C" {
     ) -> ::std::os::raw::c_int;
 }
 extern "C" {
+    /// Read generalized connectivity data
+    /// modes: [ r - m ]
+    /// arguments: 
+    /// -> `fn`(`int`): CGNS file index number.
+    /// -> `B`(`int`): Base index number, where 1 &le; `B` &le; `nbases`.
+    /// -> `Z`(`int`): Zone index number, where 1 &le; `Z` &le; `nzones`.
+    /// -> `I`(`int`): Interface index number, where 1 &le; `I` &le; `nconns`.
+    /// <- `pnts`(`cgsize_t*`): Array of points defining the interface in the current zone.
+    /// -> `donor_datatype`(`DataType_t`): Data type in which the donor points are stored in the file. As of Version 3.0, this value is ignored when writing, and on reading it will return either `Integer` or `LongInteger` depending on whether the file was written using 32 or 64-bit. The `donor_datatype` argument was left in these functions only for backward compatibility. The donor data is always read as `cgsize_t`.
+    /// <- `donor_data`(`cgsize_t*`): Array of donor points or cells corresponding to `ndata_donor`. Note that it is possible that the same donor point or cell may be used multiple times.
     pub fn cg_conn_read(
         file_number: ::std::os::raw::c_int,
         B: ::std::os::raw::c_int,
@@ -1677,6 +2463,24 @@ extern "C" {
     ) -> ::std::os::raw::c_int;
 }
 extern "C" {
+    /// modes: [ - w m ]
+    /// arguments: 
+    /// -> `fn`(`int`): CGNS file index number.
+    /// -> `B`(`int`): Base index number, where 1 &le; `B` &le; `nbases`.
+    /// -> `Z`(`int`): Zone index number, where 1 &le; `Z` &le; `nzones`.
+    /// -> `connectname`(`char*`): Name of the interface.
+    /// -> `location`(`GridLocation_t`): Grid location used in the definition of the point set. The currently admissible locations are `Vertex` and `CellCenter`.
+    /// -> `connect_type`(`GridConnectivityType_t`): Type of interface being defined. The admissible types are `Overset`, `Abutting`, and `Abutting1to1`.
+    /// -> `ptset_type`(`PointSetType_t`): Type of point set defining the interface in the current zone; either `PointRange` or `PointList`.
+    /// -> `npnts`(`cgsize_t`): Number of points defining the interface in the current zone. For a `ptset_type` of `PointRange`, `npnts` is always two. For a `ptset_type` of `PointList`, `npnts` is the number of points in the `PointList`.
+    /// -> `pnts`(`cgsize_t*`): Array of points defining the interface in the current zone.
+    /// -> `donorname`(`char*`): Name of the zone interfacing with the current zone.
+    /// -> `donor_zonetype`(`ZoneType_t`): Type of the donor zone. The admissible types are `Structured` and `Unstructured`.
+    /// -> `donor_ptset_type`(`PointSetType_t`): Type of point set defining the interface in the donor zone; either `PointListDonor` or `CellListDonor`.
+    /// -> `donor_datatype`(`DataType_t`): Data type in which the donor points are stored in the file. As of Version 3.0, this value is ignored when writing, and on reading it will return either `Integer` or `LongInteger` depending on whether the file was written using 32 or 64-bit. The `donor_datatype` argument was left in these functions only for backward compatibility. The donor data is always read as `cgsize_t`.
+    /// -> `ndata_donor`(`cgsize_t`): Number of points or cells in the current zone. These are paired with points, cells, or fractions thereof in the donor zone.
+    /// -> `donor_data`(`cgsize_t*`): Array of donor points or cells corresponding to `ndata_donor`. Note that it is possible that the same donor point or cell may be used multiple times.
+    /// <- `I`(`int*`): Interface index number, where 1 &le; `I` &le; `nconns`.
     pub fn cg_conn_write(
         file_number: ::std::os::raw::c_int,
         B: ::std::os::raw::c_int,
@@ -1697,6 +2501,19 @@ extern "C" {
     ) -> ::std::os::raw::c_int;
 }
 extern "C" {
+    /// modes: [ - w m ]
+    /// arguments: 
+    /// -> `fn`(`int`): CGNS file index number.
+    /// -> `B`(`int`): Base index number, where 1 &le; `B` &le; `nbases`.
+    /// -> `Z`(`int`): Zone index number, where 1 &le; `Z` &le; `nzones`.
+    /// -> `connectname`(`char*`): Name of the interface.
+    /// -> `location`(`GridLocation_t`): Grid location used in the definition of the point set. The currently admissible locations are `Vertex` and `CellCenter`.
+    /// -> `connect_type`(`GridConnectivityType_t`): Type of interface being defined. The admissible types are `Overset`, `Abutting`, and `Abutting1to1`.
+    /// -> `ptset_type`(`PointSetType_t`): Type of point set defining the interface in the current zone; either `PointRange` or `PointList`.
+    /// -> `npnts`(`cgsize_t`): Number of points defining the interface in the current zone. For a `ptset_type` of `PointRange`, `npnts` is always two. For a `ptset_type` of `PointList`, `npnts` is the number of points in the `PointList`.
+    /// -> `pnts`(`cgsize_t*`): Array of points defining the interface in the current zone.
+    /// -> `donorname`(`char*`): Name of the zone interfacing with the current zone.
+    /// <- `I`(`int*`): Interface index number, where 1 &le; `I` &le; `nconns`.
     pub fn cg_conn_write_short(
         file_number: ::std::os::raw::c_int,
         B: ::std::os::raw::c_int,
@@ -1712,6 +2529,13 @@ extern "C" {
     ) -> ::std::os::raw::c_int;
 }
 extern "C" {
+    /// modes: [ r - m ]
+    /// arguments: 
+    /// -> `fn`(`int`): CGNS file index number.
+    /// -> `B`(`int`): Base index number, where 1 &le; `B` &le; `nbases`.
+    /// -> `Z`(`int`): Zone index number, where 1 &le; `Z` &le; `nzones`.
+    /// -> `I`(`int`): Interface index number, where 1 &le; `I` &le; `nconns`.
+    /// <- `pnts`(`cgsize_t*`): Array of points defining the interface in the current zone.
     pub fn cg_conn_read_short(
         file_number: ::std::os::raw::c_int,
         B: ::std::os::raw::c_int,
@@ -1721,6 +2545,12 @@ extern "C" {
     ) -> ::std::os::raw::c_int;
 }
 extern "C" {
+    /// modes: [ r - m ]
+    /// arguments: 
+    /// -> `fn`(`int`): CGNS file index number.
+    /// -> `B`(`int`): Base index number, where 1 &le; `B` &le; `nbases`.
+    /// -> `Z`(`int`): Zone index number, where 1 &le; `Z` &le; `nzones`.
+    /// <- `n1to1`(`int*`): Number of one-to-one interfaces in zone `Z`, stored under `GridConnectivity1to1_t` nodes. (I.e., this does not include one-to-one interfaces that may be stored under `GridConnectivity_t` nodes, used for generalized zone interfaces.)
     pub fn cg_n1to1(
         fn_: ::std::os::raw::c_int,
         B: ::std::os::raw::c_int,
@@ -1729,6 +2559,18 @@ extern "C" {
     ) -> ::std::os::raw::c_int;
 }
 extern "C" {
+    /// Read 1-to-1 connectivity data for a zone
+    /// modes: [ r - m ]
+    /// arguments: 
+    /// -> `fn`(`int`): CGNS file index number.
+    /// -> `B`(`int`): Base index number, where 1 &le; `B` &le; `nbases`.
+    /// -> `Z`(`int`): Zone index number, where 1 &le; `Z` &le; `nzones`.
+    /// -> `I`(`int`): Interface index number, where 1 &le; `I` &le; `n1to1`.
+    /// <- `connectname`(`char*`): Name of the interface.
+    /// <- `donorname`(`char*`): Name of the zone interfacing with the current zone.
+    /// <- `range`(`cgsize_t*`): Range of points for the current zone.
+    /// <- `donor_range`(`cgsize_t*`): Range of points for the donor zone.
+    /// <- `transform`(`int*`): Short hand notation for the <a href="../sids/cnct.html#Transform">transformation matrix</a> defining the relative orientation of the two zones.
     pub fn cg_1to1_read(
         fn_: ::std::os::raw::c_int,
         B: ::std::os::raw::c_int,
@@ -1751,6 +2593,17 @@ extern "C" {
     ) -> ::std::os::raw::c_int;
 }
 extern "C" {
+    /// modes: [ - w m ]
+    /// arguments: 
+    /// -> `fn`(`int`): CGNS file index number.
+    /// -> `B`(`int`): Base index number, where 1 &le; `B` &le; `nbases`.
+    /// -> `Z`(`int`): Zone index number, where 1 &le; `Z` &le; `nzones`.
+    /// -> `connectname`(`char*`): Name of the interface.
+    /// -> `donorname`(`char*`): Name of the zone interfacing with the current zone.
+    /// -> `range`(`cgsize_t*`): Range of points for the current zone.
+    /// -> `donor_range`(`cgsize_t*`): Range of points for the donor zone.
+    /// -> `transform`(`int*`): Short hand notation for the <a href="../sids/cnct.html#Transform">transformation matrix</a> defining the relative orientation of the two zones.
+    /// <- `I`(`int*`): Interface index number, where 1 &le; `I` &le; `n1to1`.
     pub fn cg_1to1_write(
         fn_: ::std::os::raw::c_int,
         B: ::std::os::raw::c_int,
@@ -1764,6 +2617,11 @@ extern "C" {
     ) -> ::std::os::raw::c_int;
 }
 extern "C" {
+    /// modes: [ r - m ]
+    /// arguments: 
+    /// -> `fn`(`int`): CGNS file index number.
+    /// -> `B`(`int`): Base index number, where 1 &le; `B` &le; `nbases`.
+    /// <- `n1to1_global`(`int*`): Total number of one-to-one interfaces in base `B`, stored under `GridConnectivity1to1_t` nodes. (I.e., this does not include one-to-one interfaces that may be stored under `GridConnectivity_t` nodes, used for generalized zone interfaces.) Note that the function `cg_n1to1` (described below) may be used to get the number of one-to-one interfaces in a specific zone.
     pub fn cg_n1to1_global(
         fn_: ::std::os::raw::c_int,
         B: ::std::os::raw::c_int,
@@ -1771,6 +2629,16 @@ extern "C" {
     ) -> ::std::os::raw::c_int;
 }
 extern "C" {
+    /// modes: [ r - m ]
+    /// arguments: 
+    /// -> `fn`(`int`): CGNS file index number.
+    /// -> `B`(`int`): Base index number, where 1 &le; `B` &le; `nbases`.
+    /// <- `connectname`(`char**`): Name of the interface.
+    /// <- `zonename`(`char**`): Name of the first zone, for all one-to-one interfaces in base `B`.
+    /// <- `donorname`(`char**`): Name of the second zone, for all one-to-one interfaces in base `B`.
+    /// <- `range`(`cgsize_t**`): Range of points for the first zone, for all one-to-one interfaces in base `B`.
+    /// <- `donor_range`(`cgsize_t**`): Range of points for the current zone, for all one-to-one interfaces in base `B`.
+    /// <- `transform`(`int**`): Short hand notation for the <a href="../sids/cnct.html#Transform">transformation matrix</a> defining the relative orientation of the two zones. This transformation is given for all one-to-one interfaces in base `B`.
     pub fn cg_1to1_read_global(
         fn_: ::std::os::raw::c_int,
         B: ::std::os::raw::c_int,
@@ -1783,6 +2651,12 @@ extern "C" {
     ) -> ::std::os::raw::c_int;
 }
 extern "C" {
+    /// modes: [ r - m ]
+    /// arguments: 
+    /// -> `fn`(`int`): CGNS file index number.
+    /// -> `B`(`int`): Base index number, where 1 &le; `B` &le; `nbases`.
+    /// -> `Z`(`int`): Zone index number, where 1 &le; `Z` &le; `nzones`.
+    /// <- `nbocos`(`int*`): Number of boundary conditions in zone `Z`.
     pub fn cg_nbocos(
         fn_: ::std::os::raw::c_int,
         B: ::std::os::raw::c_int,
@@ -1791,6 +2665,20 @@ extern "C" {
     ) -> ::std::os::raw::c_int;
 }
 extern "C" {
+    /// modes: [ r - m ]
+    /// arguments: 
+    /// -> `fn`(`int`): CGNS file index number.
+    /// -> `B`(`int`): Base index number, where 1 &le; `B` &le; `nbases`.
+    /// -> `Z`(`int`): Zone index number, where 1 &le; `Z` &le; `nzones`.
+    /// -> `BC`(`int`): Boundary condition index number, where 1 &le; `BC` &le; `nbocos`.
+    /// <- `boconame`(`char*`): Name of the boundary condition.
+    /// <- `bocotype`(`BCType_t*`): Type of boundary condition defined. See the eligible types for `BCType_t` in the <a href="general.html#typedefs">Typedefs</a> section. Note that if `bocotype` is `FamilySpecified` the boundary condition type is being specified for the family to which the boundary belongs. The boundary condition type for the family may be read and written using <a href="families.html#familybc">`cg_fambc_read` and `cg_fambc_write`</a>.
+    /// <- `ptset_type`(`PointSetType_t*`): The extent of the boundary condition may be defined using a range of points or elements using `PointRange`, or using a discrete list of all points or elements at which the boundary condition is applied using `PointList`. When the boundary condition is to be applied anywhere other than points, then `GridLocation_t` under the `BC_t` node must be used to indicate this. The value of `GridLocation_t` may be read or written by `cg_boco_gridlocation_read` and `cg_boco_gridlocation_write`. As in previous versions of the library, this may also be done by first using <a href="navigating.html#goto">`cg_goto`</a> to access the `BC_t` node, then using <a href="location.html#gridlocation">`cg_gridlocation_read`</a> or <a href="location.html#gridlocation">`cg_gridlocation_write`</a>.
+    /// <- `npnts`(`cgsize_t*`): Number of points or elements defining the boundary condition region. For a `ptset_type` of `PointRange`, `npnts` is always two. For a `ptset_type` of `PointList`, `npnts` is the number of points or elements in the list.
+    /// <- `NormalIndex`(`int*`): Index vector indicating the computational coordinate direction of the boundary condition patch normal.
+    /// <- `NormalListSize`(`cgsize_t*`): If the normals are defined in `NormalList`, `NormalListSize` is the number of points in the patch times `phys_dim`, the number of coordinates required to define a vector in the field. If the normals are not defined in `NormalList`, `NormalListSize` is 0.
+    /// <- `NormalDataType`(`DataType_t*`): Data type used in the definition of the normals. Admissible data types for the normals are `RealSingle` and `RealDouble`.
+    /// <- `ndataset`(`int*`): Number of boundary condition datasets for the current boundary condition.
     pub fn cg_boco_info(
         fn_: ::std::os::raw::c_int,
         B: ::std::os::raw::c_int,
@@ -1807,6 +2695,14 @@ extern "C" {
     ) -> ::std::os::raw::c_int;
 }
 extern "C" {
+    /// modes: [ r - m ]
+    /// arguments: 
+    /// -> `fn`(`int`): CGNS file index number.
+    /// -> `B`(`int`): Base index number, where 1 &le; `B` &le; `nbases`.
+    /// -> `Z`(`int`): Zone index number, where 1 &le; `Z` &le; `nzones`.
+    /// -> `BC`(`int`): Boundary condition index number, where 1 &le; `BC` &le; `nbocos`.
+    /// <- `pnts`(`cgsize_t*`): Array of point or element indices defining the boundary condition region. There should be `npnts` values, each of dimension <a href="../sids/cgnsbase.html#IndexDimension">`IndexDimension`</a> (i.e., 1 for unstructured grids, and 2 or 3 for structured grids with 2-D or 3-D elements, respectively).
+    /// <- `NormalList`(`void*`): List of vectors normal to the boundary condition patch pointing into the interior of the zone.
     pub fn cg_boco_read(
         fn_: ::std::os::raw::c_int,
         B: ::std::os::raw::c_int,
@@ -1826,6 +2722,17 @@ extern "C" {
     ) -> ::std::os::raw::c_int;
 }
 extern "C" {
+    /// modes: [ - w m ]
+    /// arguments: 
+    /// -> `fn`(`int`): CGNS file index number.
+    /// -> `B`(`int`): Base index number, where 1 &le; `B` &le; `nbases`.
+    /// -> `Z`(`int`): Zone index number, where 1 &le; `Z` &le; `nzones`.
+    /// -> `boconame`(`char*`): Name of the boundary condition.
+    /// -> `bocotype`(`BCType_t`): Type of boundary condition defined. See the eligible types for `BCType_t` in the <a href="general.html#typedefs">Typedefs</a> section. Note that if `bocotype` is `FamilySpecified` the boundary condition type is being specified for the family to which the boundary belongs. The boundary condition type for the family may be read and written using <a href="families.html#familybc">`cg_fambc_read` and `cg_fambc_write`</a>.
+    /// -> `ptset_type`(`PointSetType_t`): The extent of the boundary condition may be defined using a range of points or elements using `PointRange`, or using a discrete list of all points or elements at which the boundary condition is applied using `PointList`. When the boundary condition is to be applied anywhere other than points, then `GridLocation_t` under the `BC_t` node must be used to indicate this. The value of `GridLocation_t` may be read or written by `cg_boco_gridlocation_read` and `cg_boco_gridlocation_write`. As in previous versions of the library, this may also be done by first using <a href="navigating.html#goto">`cg_goto`</a> to access the `BC_t` node, then using <a href="location.html#gridlocation">`cg_gridlocation_read`</a> or <a href="location.html#gridlocation">`cg_gridlocation_write`</a>.
+    /// -> `npnts`(`cgsize_t`): Number of points or elements defining the boundary condition region. For a `ptset_type` of `PointRange`, `npnts` is always two. For a `ptset_type` of `PointList`, `npnts` is the number of points or elements in the list.
+    /// -> `pnts`(`cgsize_t*`): Array of point or element indices defining the boundary condition region. There should be `npnts` values, each of dimension <a href="../sids/cgnsbase.html#IndexDimension">`IndexDimension`</a> (i.e., 1 for unstructured grids, and 2 or 3 for structured grids with 2-D or 3-D elements, respectively).
+    /// <- `BC`(`int*`): Boundary condition index number, where 1 &le; `BC` &le; `nbocos`.
     pub fn cg_boco_write(
         file_number: ::std::os::raw::c_int,
         B: ::std::os::raw::c_int,
@@ -1839,6 +2746,16 @@ extern "C" {
     ) -> ::std::os::raw::c_int;
 }
 extern "C" {
+    /// modes: [ - w m ]
+    /// arguments: 
+    /// -> `fn`(`int`): CGNS file index number.
+    /// -> `B`(`int`): Base index number, where 1 &le; `B` &le; `nbases`.
+    /// -> `Z`(`int`): Zone index number, where 1 &le; `Z` &le; `nzones`.
+    /// -> `BC`(`int`): Boundary condition index number, where 1 &le; `BC` &le; `nbocos`.
+    /// -> `NormalIndex`(`int*`): Index vector indicating the computational coordinate direction of the boundary condition patch normal.
+    /// -> `NormalListFlag`(`int`): Flag indicating if the normals are defined in `NormalList` and are to be written out; 1 if they are defined, 0 if they're not.
+    /// -> `NormalDataType`(`DataType_t`): Data type used in the definition of the normals. Admissible data types for the normals are `RealSingle` and `RealDouble`.
+    /// -> `NormalList`(`void*`): List of vectors normal to the boundary condition patch pointing into the interior of the zone.
     pub fn cg_boco_normal_write(
         file_number: ::std::os::raw::c_int,
         B: ::std::os::raw::c_int,
@@ -1851,6 +2768,14 @@ extern "C" {
     ) -> ::std::os::raw::c_int;
 }
 extern "C" {
+    /// Read boundary condition location
+    /// modes: [ r - m ]
+    /// arguments: 
+    /// -> `fn`(`int`): CGNS file index number.
+    /// -> `B`(`int`): Base index number, where 1 &le; `B` &le; `nbases`.
+    /// -> `Z`(`int`): Zone index number, where 1 &le; `Z` &le; `nzones`.
+    /// -> `BC`(`int`): Boundary condition index number, where 1 &le; `BC` &le; `nbocos`.
+    /// <- `location`(`GridLocation_t*`): Grid location used in the definition of the point set. The currently admissible locations are `Vertex` (the default if not given), and `CellCenter`. Interpretation of `CellCenter`, and additional allowable values of grid location depends on the base cell dimension. For `CellDim`=1, `CellCenter` refers to line elements. For `CellDim`=2, `CellCenter` refers to area elements, and the additional value `EdgeCenter` is allowed. For `CellDim`=3, `CellCenter` refers to volume elements, and in addition to `EdgeCenter`, the values of `FaceCenter`, `IFaceCenter`, `JFaceCenter`, and `KFaceCenter` may be used.
     pub fn cg_boco_gridlocation_read(
         file_number: ::std::os::raw::c_int,
         B: ::std::os::raw::c_int,
@@ -1860,6 +2785,13 @@ extern "C" {
     ) -> ::std::os::raw::c_int;
 }
 extern "C" {
+    /// modes: [ - w m ]
+    /// arguments: 
+    /// -> `fn`(`int`): CGNS file index number.
+    /// -> `B`(`int`): Base index number, where 1 &le; `B` &le; `nbases`.
+    /// -> `Z`(`int`): Zone index number, where 1 &le; `Z` &le; `nzones`.
+    /// -> `BC`(`int`): Boundary condition index number, where 1 &le; `BC` &le; `nbocos`.
+    /// -> `location`(`GridLocation_t`): Grid location used in the definition of the point set. The currently admissible locations are `Vertex` (the default if not given), and `CellCenter`. Interpretation of `CellCenter`, and additional allowable values of grid location depends on the base cell dimension. For `CellDim`=1, `CellCenter` refers to line elements. For `CellDim`=2, `CellCenter` refers to area elements, and the additional value `EdgeCenter` is allowed. For `CellDim`=3, `CellCenter` refers to volume elements, and in addition to `EdgeCenter`, the values of `FaceCenter`, `IFaceCenter`, `JFaceCenter`, and `KFaceCenter` may be used.
     pub fn cg_boco_gridlocation_write(
         file_number: ::std::os::raw::c_int,
         B: ::std::os::raw::c_int,
@@ -1869,6 +2801,17 @@ extern "C" {
     ) -> ::std::os::raw::c_int;
 }
 extern "C" {
+    /// modes: [ r - m ]
+    /// arguments: 
+    /// -> `fn`(`int`): CGNS file index number.
+    /// -> `B`(`int`): Base index number, where 1 &le; `B` &le; `nbases`.
+    /// -> `Z`(`int`): Zone index number, where 1 &le; `Z` &le; `nzones`.
+    /// -> `BC`(`int`): Boundary condition index number, where 1 &le; `BC` &le; `nbocos`.
+    /// -> `Dset`(`int`): Dataset index number, where 1 &le; `Dset` &le; `ndataset`.
+    /// <- `DatasetName`(`char*`): Name of dataset.
+    /// <- `BCType`(`BCType_t*`): Simple boundary condition type for the dataset. The supported types are listed in the table of <a href="../sids/bc.html#t:BCTypeSimple">Simple Boundary Condition Types</a> in the SIDS manual, but note that `FamilySpecified` does not apply here.
+    /// <- `DirichletFlag`(`int*`): Flag indicating if the dataset contains Dirichlet data.
+    /// <- `NeumannFlag`(`int*`): Flag indicating if the dataset contains Neumann data.
     pub fn cg_dataset_read(
         fn_: ::std::os::raw::c_int,
         B: ::std::os::raw::c_int,
@@ -1882,6 +2825,15 @@ extern "C" {
     ) -> ::std::os::raw::c_int;
 }
 extern "C" {
+    /// modes: [ - w m ]
+    /// arguments: 
+    /// -> `fn`(`int`): CGNS file index number.
+    /// -> `B`(`int`): Base index number, where 1 &le; `B` &le; `nbases`.
+    /// -> `Z`(`int`): Zone index number, where 1 &le; `Z` &le; `nzones`.
+    /// -> `BC`(`int`): Boundary condition index number, where 1 &le; `BC` &le; `nbocos`.
+    /// -> `DatasetName`(`char*`): Name of dataset.
+    /// -> `BCType`(`BCType_t`): Simple boundary condition type for the dataset. The supported types are listed in the table of <a href="../sids/bc.html#t:BCTypeSimple">Simple Boundary Condition Types</a> in the SIDS manual, but note that `FamilySpecified` does not apply here.
+    /// <- `Dset`(`int*`): Dataset index number, where 1 &le; `Dset` &le; `ndataset`.
     pub fn cg_dataset_write(
         file_number: ::std::os::raw::c_int,
         B: ::std::os::raw::c_int,
@@ -1893,6 +2845,11 @@ extern "C" {
     ) -> ::std::os::raw::c_int;
 }
 extern "C" {
+    /// modes: [ - w m ]
+    /// arguments: 
+    /// -> `DatasetName`(`char*`): Name of dataset.
+    /// -> `BCType`(`BCType_t`): Simple boundary condition type for the dataset. The supported types are listed in the table of <a href="../sids/bc.html#t:BCTypeSimple">Simple Boundary Condition Types</a> in the SIDS manual, but note that `FamilySpecified` does not apply here.
+    /// -> `BCDataType`(`BCDataType_t`): Type of boundary condition in the dataset (i.e., for a `BCData_t` child node). Admissible types are `Dirichlet` and `Neumann`.
     pub fn cg_bcdataset_write(
         name: *const ::std::os::raw::c_char,
         BCType: BCType_t,
@@ -1900,9 +2857,20 @@ extern "C" {
     ) -> ::std::os::raw::c_int;
 }
 extern "C" {
+    /// modes: [ r - m ]
+    /// arguments: 
+    /// <- `ndataset`(`int*`): Number of `BCDataSet` nodes under the current `FamilyBC_t` node.
     pub fn cg_bcdataset_info(n_dataset: *mut ::std::os::raw::c_int) -> ::std::os::raw::c_int;
 }
 extern "C" {
+    /// Read family boundary condition dataset info
+    /// modes: [ r - m ]
+    /// arguments: 
+    /// -> `Dset`(`int`): Dataset index number, where 1 &le; `Dset` &le; `ndataset`.
+    /// <- `DatasetName`(`char*`): Name of dataset.
+    /// <- `BCType`(`BCType_t*`): Simple boundary condition type for the dataset. The supported types are listed in the table of <a href="../sids/bc.html#t:BCTypeSimple">Simple Boundary Condition Types</a> in the SIDS manual, but note that `FamilySpecified` does not apply here.
+    /// <- `DirichletFlag`(`int*`): Flag indicating if the dataset contains Dirichlet data.
+    /// <- `NeumannFlag`(`int*`): Flag indicating if the dataset contains Neumann data.
     pub fn cg_bcdataset_read(
         index: ::std::os::raw::c_int,
         name: *mut ::std::os::raw::c_char,
@@ -1912,6 +2880,15 @@ extern "C" {
     ) -> ::std::os::raw::c_int;
 }
 extern "C" {
+    /// Write boundary condition data
+    /// modes: [ - w m ]
+    /// arguments: 
+    /// -> `fn`(`int`): CGNS file index number.
+    /// -> `B`(`int`): Base index number, where 1 &le; `B` &le; `nbases`.
+    /// -> `Z`(`int`): Zone index number, where 1 &le; `Z` &le; `nzones`.
+    /// -> `BC`(`int`): Boundary condition index number, where 1 &le; `BC` &le; `nbocos`.
+    /// -> `Dset`(`int`): Dataset index number, where 1 &le; `Dset` &le; `ndataset`.
+    /// -> `BCDataType`(`BCDataType_t`): Type of boundary condition in the dataset. Admissible boundary condition types are `Dirichlet` and `Neumann`.
     pub fn cg_bcdata_write(
         file_number: ::std::os::raw::c_int,
         B: ::std::os::raw::c_int,
@@ -1922,6 +2899,12 @@ extern "C" {
     ) -> ::std::os::raw::c_int;
 }
 extern "C" {
+    /// modes: [ r - m ]
+    /// arguments: 
+    /// -> `fn`(`int`): CGNS file index number.
+    /// -> `B`(`int`): Base index number, where 1 &le; `B` &le; `nbases`.
+    /// -> `Z`(`int`): Zone index number, where 1 &le; `Z` &le; `nzones`.
+    /// <- `ndiscrete`(`int*`): Number of `DiscreteData_t` data structures under zone `Z`.
     pub fn cg_ndiscrete(
         file_number: ::std::os::raw::c_int,
         B: ::std::os::raw::c_int,
@@ -1930,6 +2913,13 @@ extern "C" {
     ) -> ::std::os::raw::c_int;
 }
 extern "C" {
+    /// modes: [ r - m ]
+    /// arguments: 
+    /// -> `fn`(`int`): CGNS file index number.
+    /// -> `B`(`int`): Base index number, where 1 &le; `B` &le; `nbases`.
+    /// -> `Z`(`int`): Zone index number, where 1 &le; `Z` &le; `nzones`.
+    /// -> `D`(`int`): Discrete data index number, where 1 &le; `D` &le; `ndiscrete`.
+    /// <- `DiscreteName`(`char*`): Name of `DiscreteData_t` data structure.
     pub fn cg_discrete_read(
         file_number: ::std::os::raw::c_int,
         B: ::std::os::raw::c_int,
@@ -1939,6 +2929,13 @@ extern "C" {
     ) -> ::std::os::raw::c_int;
 }
 extern "C" {
+    /// modes: [ - w m ]
+    /// arguments: 
+    /// -> `fn`(`int`): CGNS file index number.
+    /// -> `B`(`int`): Base index number, where 1 &le; `B` &le; `nbases`.
+    /// -> `Z`(`int`): Zone index number, where 1 &le; `Z` &le; `nzones`.
+    /// -> `DiscreteName`(`char*`): Name of `DiscreteData_t` data structure.
+    /// <- `D`(`int*`): Discrete data index number, where 1 &le; `D` &le; `ndiscrete`.
     pub fn cg_discrete_write(
         file_number: ::std::os::raw::c_int,
         B: ::std::os::raw::c_int,
@@ -1948,6 +2945,14 @@ extern "C" {
     ) -> ::std::os::raw::c_int;
 }
 extern "C" {
+    /// modes: [ r - m ]
+    /// arguments: 
+    /// -> `fn`(`int`): CGNS file index number.
+    /// -> `B`(`int`): Base index number, where 1 &le; `B` &le; `nbases`.
+    /// -> `Z`(`int`): Zone index number, where 1 &le; `Z` &le; `nzones`.
+    /// -> `D`(`int`): Discrete data index number, where 1 &le; `D` &le; `ndiscrete`.
+    /// <- `data_dim`(`int*`): Number of dimensions defining the discrete data. If a point set has been defined, this will be 1, otherwise this will be the current zone index dimension.</td>
+    /// <- `dim_vals`(`cgsize_t*`): The array of `data_dim` dimensions for the discrete data.</td>
     pub fn cg_discrete_size(
         fn_: ::std::os::raw::c_int,
         B: ::std::os::raw::c_int,
@@ -1958,6 +2963,14 @@ extern "C" {
     ) -> ::std::os::raw::c_int;
 }
 extern "C" {
+    /// modes: [ r - m ]
+    /// arguments: 
+    /// -> `fn`(`int`): CGNS file index number.
+    /// -> `B`(`int`): Base index number, where 1 &le; `B` &le; `nbases`.
+    /// -> `Z`(`int`): Zone index number, where 1 &le; `Z` &le; `nzones`.
+    /// -> `D`(`int`): Discrete data index number, where 1 &le; `D` &le; `ndiscrete`.
+    /// <- `ptset_type`(`PointSetType_t*`): Type of point set defining the interface for the discrete data; either `PointRange` or `PointList`.
+    /// <- `npnts`(`cgsize_t*`): Number of points defining the interface for the discrete data. For a `ptset_type` of `PointRange`, `npnts` is always two. For a `ptset_type` of `PointList`, `npnts` is the number of points in the list.
     pub fn cg_discrete_ptset_info(
         fn_: ::std::os::raw::c_int,
         B: ::std::os::raw::c_int,
@@ -1968,6 +2981,13 @@ extern "C" {
     ) -> ::std::os::raw::c_int;
 }
 extern "C" {
+    /// modes: [ r - m ]
+    /// arguments: 
+    /// -> `fn`(`int`): CGNS file index number.
+    /// -> `B`(`int`): Base index number, where 1 &le; `B` &le; `nbases`.
+    /// -> `Z`(`int`): Zone index number, where 1 &le; `Z` &le; `nzones`.
+    /// -> `D`(`int`): Discrete data index number, where 1 &le; `D` &le; `ndiscrete`.
+    /// <- `pnts`(`cgsize_t*`): Array of points defining the interface for the discrete data.
     pub fn cg_discrete_ptset_read(
         fn_: ::std::os::raw::c_int,
         B: ::std::os::raw::c_int,
@@ -1977,6 +2997,17 @@ extern "C" {
     ) -> ::std::os::raw::c_int;
 }
 extern "C" {
+    /// modes: [ - w m ]
+    /// arguments: 
+    /// -> `fn`(`int`): CGNS file index number.
+    /// -> `B`(`int`): Base index number, where 1 &le; `B` &le; `nbases`.
+    /// -> `Z`(`int`): Zone index number, where 1 &le; `Z` &le; `nzones`.
+    /// -> `char `(`const`): undefined
+    /// -> `location`(`GridLocation_t`): Grid location where the discrete data is recorded. The current admissible locations are `Vertex`, `CellCenter`, `IFaceCenter`, `JFaceCenter`, and `KFaceCenter`.
+    /// -> `ptset_type`(`PointSetType_t`): Type of point set defining the interface for the discrete data; either `PointRange` or `PointList`.
+    /// -> `npnts`(`cgsize_t`): Number of points defining the interface for the discrete data. For a `ptset_type` of `PointRange`, `npnts` is always two. For a `ptset_type` of `PointList`, `npnts` is the number of points in the list.
+    /// -> `cgsize_t `(`const`): undefined
+    /// <- `D`(`int*`): Discrete data index number, where 1 &le; `D` &le; `ndiscrete`.
     pub fn cg_discrete_ptset_write(
         fn_: ::std::os::raw::c_int,
         B: ::std::os::raw::c_int,
@@ -1990,6 +3021,12 @@ extern "C" {
     ) -> ::std::os::raw::c_int;
 }
 extern "C" {
+    /// modes: [ r - m ]
+    /// arguments: 
+    /// -> `fn`(`int`): CGNS file index number.
+    /// -> `B`(`int`): Base index number, where 1 &le; `B` &le; `nbases`.
+    /// -> `Z`(`int`): Zone index number, where 1 &le; `Z` &le; `nzones`.
+    /// <- `n_rigid_motions`(`int*`): Number of `RigidGridMotion_t` nodes under zone `Z`.
     pub fn cg_n_rigid_motions(
         file_number: ::std::os::raw::c_int,
         B: ::std::os::raw::c_int,
@@ -1998,6 +3035,14 @@ extern "C" {
     ) -> ::std::os::raw::c_int;
 }
 extern "C" {
+    /// modes: [ r - m ]
+    /// arguments: 
+    /// -> `fn`(`int`): CGNS file index number.
+    /// -> `B`(`int`): Base index number, where 1 &le; `B` &le; `nbases`.
+    /// -> `Z`(`int`): Zone index number, where 1 &le; `Z` &le; `nzones`.
+    /// -> `R`(`int`): Rigid rotation index number, where 1 &le; `R` &le; `n_rigid_motions`.
+    /// <- `RigidGridMotionName`(`char*`): Name of the `RigidGridMotion_t` node.
+    /// <- `RigidGridMotionType`(`RigidGridMotionType_t`): Type of rigid grid motion. The admissible types are `CG_Null`, `CG_UserDefined`, `ConstantRate`, and `VariableRate`.
     pub fn cg_rigid_motion_read(
         file_number: ::std::os::raw::c_int,
         B: ::std::os::raw::c_int,
@@ -2008,6 +3053,14 @@ extern "C" {
     ) -> ::std::os::raw::c_int;
 }
 extern "C" {
+    /// modes: [ - w m ]
+    /// arguments: 
+    /// -> `fn`(`int`): CGNS file index number.
+    /// -> `B`(`int`): Base index number, where 1 &le; `B` &le; `nbases`.
+    /// -> `Z`(`int`): Zone index number, where 1 &le; `Z` &le; `nzones`.
+    /// -> `RigidGridMotionName`(`char*`): Name of the `RigidGridMotion_t` node.
+    /// -> `RigidGridMotionType`(`RigidGridMotionType_t`): Type of rigid grid motion. The admissible types are `CG_Null`, `CG_UserDefined`, `ConstantRate`, and `VariableRate`.
+    /// <- `R`(`int*`): Rigid rotation index number, where 1 &le; `R` &le; `n_rigid_motions`.
     pub fn cg_rigid_motion_write(
         file_number: ::std::os::raw::c_int,
         B: ::std::os::raw::c_int,
@@ -2018,6 +3071,12 @@ extern "C" {
     ) -> ::std::os::raw::c_int;
 }
 extern "C" {
+    /// modes: [ r - m ]
+    /// arguments: 
+    /// -> `fn`(`int`): CGNS file index number.
+    /// -> `B`(`int`): Base index number, where 1 &le; `B` &le; `nbases`.
+    /// -> `Z`(`int`): Zone index number, where 1 &le; `Z` &le; `nzones`.
+    /// <- `n_arbitrary_motions`(`int*`): Number of `ArbitraryGridMotion_t` nodes under zone `Z`.
     pub fn cg_n_arbitrary_motions(
         file_number: ::std::os::raw::c_int,
         B: ::std::os::raw::c_int,
@@ -2026,6 +3085,14 @@ extern "C" {
     ) -> ::std::os::raw::c_int;
 }
 extern "C" {
+    /// modes: [ r - m ]
+    /// arguments: 
+    /// -> `fn`(`int`): CGNS file index number.
+    /// -> `B`(`int`): Base index number, where 1 &le; `B` &le; `nbases`.
+    /// -> `Z`(`int`): Zone index number, where 1 &le; `Z` &le; `nzones`.
+    /// -> `A`(`int`): Arbitrary grid motion index number, where 1 &le; `A` &le; `n_arbitrary_motions`.
+    /// <- `ArbitraryGridMotionName`(`char*`): Name of the `ArbitraryGridMotion_t` node.
+    /// <- `ArbitraryGridMotionType`(`ArbitraryGridMotionType_t`): Type of arbitrary grid motion. The admissible types are `CG_Null`, `CG_UserDefined`, `NonDeformingGrid`, and `DeformingGrid`.
     pub fn cg_arbitrary_motion_read(
         file_number: ::std::os::raw::c_int,
         B: ::std::os::raw::c_int,
@@ -2036,6 +3103,14 @@ extern "C" {
     ) -> ::std::os::raw::c_int;
 }
 extern "C" {
+    /// modes: [ - w m ]
+    /// arguments: 
+    /// -> `fn`(`int`): CGNS file index number.
+    /// -> `B`(`int`): Base index number, where 1 &le; `B` &le; `nbases`.
+    /// -> `Z`(`int`): Zone index number, where 1 &le; `Z` &le; `nzones`.
+    /// -> `ArbitraryGridMotionName`(`char*`): Name of the `ArbitraryGridMotion_t` node.
+    /// -> `ArbitraryGridMotionType`(`ArbitraryGridMotionType_t`): Type of arbitrary grid motion. The admissible types are `CG_Null`, `CG_UserDefined`, `NonDeformingGrid`, and `DeformingGrid`.
+    /// <- `A`(`int*`): Arbitrary grid motion index number, where 1 &le; `A` &le; `n_arbitrary_motions`.
     pub fn cg_arbitrary_motion_write(
         file_number: ::std::os::raw::c_int,
         B: ::std::os::raw::c_int,
@@ -2046,6 +3121,12 @@ extern "C" {
     ) -> ::std::os::raw::c_int;
 }
 extern "C" {
+    /// Read simulation type
+    /// modes: [ r - m ]
+    /// arguments: 
+    /// -> `fn`(`int`): CGNS file index number.
+    /// -> `B`(`int`): Base index number, where 1 &le; `B` &le; `nbases`.
+    /// <- `SimulationType`(`SimulationType_t`): Type of simulation. Valid types are `CG_Null`, `CG_UserDefined`, `TimeAccurate`, and `NonTimeAccurate`.
     pub fn cg_simulation_type_read(
         file_number: ::std::os::raw::c_int,
         B: ::std::os::raw::c_int,
@@ -2053,6 +3134,11 @@ extern "C" {
     ) -> ::std::os::raw::c_int;
 }
 extern "C" {
+    /// modes: [ - w m ]
+    /// arguments: 
+    /// -> `fn`(`int`): CGNS file index number.
+    /// -> `B`(`int`): Base index number, where 1 &le; `B` &le; `nbases`.
+    /// -> `SimulationType`(`SimulationType_t`): Type of simulation. Valid types are `CG_Null`, `CG_UserDefined`, `TimeAccurate`, and `NonTimeAccurate`.
     pub fn cg_simulation_type_write(
         file_number: ::std::os::raw::c_int,
         B: ::std::os::raw::c_int,
@@ -2060,6 +3146,12 @@ extern "C" {
     ) -> ::std::os::raw::c_int;
 }
 extern "C" {
+    /// modes: [ r - m ]
+    /// arguments: 
+    /// -> `fn`(`int`): CGNS file index number.
+    /// -> `B`(`int`): Base index number, where 1 &le; `B` &le; `nbases`.
+    /// <- `BaseIterName`(`char*`): Name of the `BaseIterativeData_t` node.
+    /// <- `Nsteps`(`int*`): Number of time steps or iterations.
     pub fn cg_biter_read(
         file_number: ::std::os::raw::c_int,
         B: ::std::os::raw::c_int,
@@ -2068,6 +3160,12 @@ extern "C" {
     ) -> ::std::os::raw::c_int;
 }
 extern "C" {
+    /// modes: [ - w m ]
+    /// arguments: 
+    /// -> `fn`(`int`): CGNS file index number.
+    /// -> `B`(`int`): Base index number, where 1 &le; `B` &le; `nbases`.
+    /// -> `BaseIterName`(`char*`): Name of the `BaseIterativeData_t` node.
+    /// -> `Nsteps`(`int`): Number of time steps or iterations.
     pub fn cg_biter_write(
         file_number: ::std::os::raw::c_int,
         B: ::std::os::raw::c_int,
@@ -2076,6 +3174,12 @@ extern "C" {
     ) -> ::std::os::raw::c_int;
 }
 extern "C" {
+    /// modes: [ r - m ]
+    /// arguments: 
+    /// -> `fn`(`int`): CGNS file index number.
+    /// -> `B`(`int`): Base index number, where 1 &le; `B` &le; `nbases`.
+    /// -> `Z`(`int`): Zone index number, where 1 &le; `Z` &le; `nzones`.
+    /// <- `ZoneIterName`(`char*`): Name of the `ZoneIterativeData_t` node.
     pub fn cg_ziter_read(
         file_number: ::std::os::raw::c_int,
         B: ::std::os::raw::c_int,
@@ -2084,6 +3188,12 @@ extern "C" {
     ) -> ::std::os::raw::c_int;
 }
 extern "C" {
+    /// modes: [ - w m ]
+    /// arguments: 
+    /// -> `fn`(`int`): CGNS file index number.
+    /// -> `B`(`int`): Base index number, where 1 &le; `B` &le; `nbases`.
+    /// -> `Z`(`int`): Zone index number, where 1 &le; `Z` &le; `nzones`.
+    /// -> `ZoneIterName`(`char*`): Name of the `ZoneIterativeData_t` node.
     pub fn cg_ziter_write(
         file_number: ::std::os::raw::c_int,
         B: ::std::os::raw::c_int,
@@ -2092,6 +3202,11 @@ extern "C" {
     ) -> ::std::os::raw::c_int;
 }
 extern "C" {
+    /// modes: [ r - m ]
+    /// arguments: 
+    /// -> `fn`(`int`): CGNS file index number.
+    /// -> `B`(`int`): Base index number, where 1 &le; `B` &le; `nbases`.
+    /// <- `GravityVector`(`float*`): Components of the gravity vector. The number of components must equal `PhysicalDimension`. (In Fortran, this is an array of Real*4 values.)
     pub fn cg_gravity_read(
         file_number: ::std::os::raw::c_int,
         B: ::std::os::raw::c_int,
@@ -2099,6 +3214,11 @@ extern "C" {
     ) -> ::std::os::raw::c_int;
 }
 extern "C" {
+    /// modes: [ - w m ]
+    /// arguments: 
+    /// -> `fn`(`int`): CGNS file index number.
+    /// -> `B`(`int`): Base index number, where 1 &le; `B` &le; `nbases`.
+    /// -> `GravityVector`(`float*`): Components of the gravity vector. The number of components must equal `PhysicalDimension`. (In Fortran, this is an array of Real*4 values.)
     pub fn cg_gravity_write(
         file_number: ::std::os::raw::c_int,
         B: ::std::os::raw::c_int,
@@ -2106,6 +3226,13 @@ extern "C" {
     ) -> ::std::os::raw::c_int;
 }
 extern "C" {
+    /// Read axisymmetry data
+    /// modes: [ r - m ]
+    /// arguments: 
+    /// -> `fn`(`int`): CGNS file index number.
+    /// -> `B`(`int`): Base index number, where 1 &le; `B` &le; `nbases`.
+    /// <- `ReferencePoint`(`float*`): Origin used for defining the axis of rotation. (In Fortran, this is an array of Real*4 values.)
+    /// <- `AxisVector`(`float*`): Direction cosines of the axis of rotation, through the reference point. (In Fortran, this is an array of Real*4 values.)
     pub fn cg_axisym_read(
         file_number: ::std::os::raw::c_int,
         B: ::std::os::raw::c_int,
@@ -2114,6 +3241,12 @@ extern "C" {
     ) -> ::std::os::raw::c_int;
 }
 extern "C" {
+    /// modes: [ - w m ]
+    /// arguments: 
+    /// -> `fn`(`int`): CGNS file index number.
+    /// -> `B`(`int`): Base index number, where 1 &le; `B` &le; `nbases`.
+    /// -> `ReferencePoint`(`float*`): Origin used for defining the axis of rotation. (In Fortran, this is an array of Real*4 values.)
+    /// -> `AxisVector`(`float*`): Direction cosines of the axis of rotation, through the reference point. (In Fortran, this is an array of Real*4 values.)
     pub fn cg_axisym_write(
         file_number: ::std::os::raw::c_int,
         B: ::std::os::raw::c_int,
@@ -2122,13 +3255,28 @@ extern "C" {
     ) -> ::std::os::raw::c_int;
 }
 extern "C" {
+    /// Read rotating coordinates data
+    /// modes: [ r - m ]
+    /// arguments: 
+    /// <- `RotationRateVector`(`float*`): Components of the angular velocity of the grid about the center of rotation. (In Fortran, this is an array of Real*4 values.)
+    /// <- `RotationCenter`(`float*`): Coordinates of the center of rotation. (In Fortran, this is an array of Real*4 values.)
     pub fn cg_rotating_read(rot_rate: *mut f32, rot_center: *mut f32) -> ::std::os::raw::c_int;
 }
 extern "C" {
+    /// modes: [ - w m ]
+    /// arguments: 
+    /// -> `RotationRateVector`(`float*`): Components of the angular velocity of the grid about the center of rotation. (In Fortran, this is an array of Real*4 values.)
+    /// -> `RotationCenter`(`float*`): Coordinates of the center of rotation. (In Fortran, this is an array of Real*4 values.)
     pub fn cg_rotating_write(rot_rate: *const f32, rot_center: *const f32)
         -> ::std::os::raw::c_int;
 }
 extern "C" {
+    /// modes: [ r - m ]
+    /// arguments: 
+    /// -> `fn`(`int`): CGNS file index number.
+    /// -> `B`(`int`): Base index number, where 1 &le; `B` &le; `nbases`.
+    /// -> `Z`(`int`): Zone index number, where 1 &le; `Z` &le; `nzones`.
+    /// -> `BC`(`int`): Boundary condition index number, where 1 &le; `BC` &le; `nbocos`.
     pub fn cg_bc_wallfunction_read(
         file_number: ::std::os::raw::c_int,
         B: ::std::os::raw::c_int,
@@ -2138,6 +3286,13 @@ extern "C" {
     ) -> ::std::os::raw::c_int;
 }
 extern "C" {
+    /// modes: [ - w m ]
+    /// arguments: 
+    /// -> `fn`(`int`): CGNS file index number.
+    /// -> `B`(`int`): Base index number, where 1 &le; `B` &le; `nbases`.
+    /// -> `Z`(`int`): Zone index number, where 1 &le; `Z` &le; `nzones`.
+    /// -> `BC`(`int`): Boundary condition index number, where 1 &le; `BC` &le; `nbocos`.
+    /// -> `WallFunctionType`(`WallFunctionType_t`): The wall function type. Valid types are `CG_Null`, `CG_UserDefined`, and `Generic`.
     pub fn cg_bc_wallfunction_write(
         file_number: ::std::os::raw::c_int,
         B: ::std::os::raw::c_int,
@@ -2147,6 +3302,16 @@ extern "C" {
     ) -> ::std::os::raw::c_int;
 }
 extern "C" {
+    /// Read area-related data
+    /// modes: [ r - m ]
+    /// arguments: 
+    /// -> `fn`(`int`): CGNS file index number.
+    /// -> `B`(`int`): Base index number, where 1 &le; `B` &le; `nbases`.
+    /// -> `Z`(`int`): Zone index number, where 1 &le; `Z` &le; `nzones`.
+    /// -> `BC`(`int`): Boundary condition index number, where 1 &le; `BC` &le; `nbocos`.
+    /// <- `AreaType`(`AreaType_t*`): The type of area. Valid types are `CG_Null`, `CG_UserDefined`, `BleedArea`, and `CaptureArea`.
+    /// <- `SurfaceArea`(`float*`): The size of the area. (In Fortran, this is a Real*4 value.)
+    /// <- `RegionName`(`char*`): The name of the region, 32 characters max.
     pub fn cg_bc_area_read(
         file_number: ::std::os::raw::c_int,
         B: ::std::os::raw::c_int,
@@ -2158,6 +3323,15 @@ extern "C" {
     ) -> ::std::os::raw::c_int;
 }
 extern "C" {
+    /// modes: [ - w m ]
+    /// arguments: 
+    /// -> `fn`(`int`): CGNS file index number.
+    /// -> `B`(`int`): Base index number, where 1 &le; `B` &le; `nbases`.
+    /// -> `Z`(`int`): Zone index number, where 1 &le; `Z` &le; `nzones`.
+    /// -> `BC`(`int`): Boundary condition index number, where 1 &le; `BC` &le; `nbocos`.
+    /// -> `AreaType`(`AreaType_t`): The type of area. Valid types are `CG_Null`, `CG_UserDefined`, `BleedArea`, and `CaptureArea`.
+    /// -> `SurfaceArea`(`float`): The size of the area. (In Fortran, this is a Real*4 value.)
+    /// -> `RegionName`(`char*`): The name of the region, 32 characters max.
     pub fn cg_bc_area_write(
         file_number: ::std::os::raw::c_int,
         B: ::std::os::raw::c_int,
@@ -2169,6 +3343,15 @@ extern "C" {
     ) -> ::std::os::raw::c_int;
 }
 extern "C" {
+    /// modes: [ r - m ]
+    /// arguments: 
+    /// -> `fn`(`int`): CGNS file index number.
+    /// -> `B`(`int`): Base index number, where 1 &le; `B` &le; `nbases`.
+    /// -> `Z`(`int`): Zone index number, where 1 &le; `Z` &le; `nzones`.
+    /// -> `I`(`int`): Grid connectivity index number, where 1 &le; `I` &le; `nconns` for the "`cg_conn`" functions, and 1 &le; `I` &le; `n1to1` for the "`cg_1to1`" functions.
+    /// <- `RotationCenter`(`float*`): An array of size `phys_dim` defining the coordinates of the origin for defining the rotation angle between the periodic interfaces. (`phys_dim` is the number of coordinates required to define a vector in the field.) (In Fortran, this is an array of Real*4 values.)
+    /// <- `RotationAngle`(`float*`): An array of size `phys_dim` defining the rotation angle from the current interface to the connecting interface. If rotating about more than one axis, the rotation is performed first about the x-axis, then the y-axis, then the z-axis. (In Fortran, this is an array of Real*4 values.)
+    /// <- `Translation`(`float*`): An array of size `phys_dim` defining the translation from the current interface to the connecting interface. (In Fortran, this is an array of Real*4 values.)
     pub fn cg_conn_periodic_read(
         file_number: ::std::os::raw::c_int,
         B: ::std::os::raw::c_int,
@@ -2180,6 +3363,15 @@ extern "C" {
     ) -> ::std::os::raw::c_int;
 }
 extern "C" {
+    /// modes: [ - w m ]
+    /// arguments: 
+    /// -> `fn`(`int`): CGNS file index number.
+    /// -> `B`(`int`): Base index number, where 1 &le; `B` &le; `nbases`.
+    /// -> `Z`(`int`): Zone index number, where 1 &le; `Z` &le; `nzones`.
+    /// -> `I`(`int`): Grid connectivity index number, where 1 &le; `I` &le; `nconns` for the "`cg_conn`" functions, and 1 &le; `I` &le; `n1to1` for the "`cg_1to1`" functions.
+    /// -> `RotationCenter`(`float*`): An array of size `phys_dim` defining the coordinates of the origin for defining the rotation angle between the periodic interfaces. (`phys_dim` is the number of coordinates required to define a vector in the field.) (In Fortran, this is an array of Real*4 values.)
+    /// -> `RotationAngle`(`float*`): An array of size `phys_dim` defining the rotation angle from the current interface to the connecting interface. If rotating about more than one axis, the rotation is performed first about the x-axis, then the y-axis, then the z-axis. (In Fortran, this is an array of Real*4 values.)
+    /// -> `Translation`(`float*`): An array of size `phys_dim` defining the translation from the current interface to the connecting interface. (In Fortran, this is an array of Real*4 values.)
     pub fn cg_conn_periodic_write(
         file_number: ::std::os::raw::c_int,
         B: ::std::os::raw::c_int,
@@ -2191,6 +3383,15 @@ extern "C" {
     ) -> ::std::os::raw::c_int;
 }
 extern "C" {
+    /// modes: [ - w m ]
+    /// arguments: 
+    /// -> `fn`(`int`): CGNS file index number.
+    /// -> `B`(`int`): Base index number, where 1 &le; `B` &le; `nbases`.
+    /// -> `Z`(`int`): Zone index number, where 1 &le; `Z` &le; `nzones`.
+    /// -> `I`(`int`): Grid connectivity index number, where 1 &le; `I` &le; `nconns` for the "`cg_conn`" functions, and 1 &le; `I` &le; `n1to1` for the "`cg_1to1`" functions.
+    /// -> `RotationCenter`(`float*`): An array of size `phys_dim` defining the coordinates of the origin for defining the rotation angle between the periodic interfaces. (`phys_dim` is the number of coordinates required to define a vector in the field.) (In Fortran, this is an array of Real*4 values.)
+    /// -> `RotationAngle`(`float*`): An array of size `phys_dim` defining the rotation angle from the current interface to the connecting interface. If rotating about more than one axis, the rotation is performed first about the x-axis, then the y-axis, then the z-axis. (In Fortran, this is an array of Real*4 values.)
+    /// -> `Translation`(`float*`): An array of size `phys_dim` defining the translation from the current interface to the connecting interface. (In Fortran, this is an array of Real*4 values.)
     pub fn cg_1to1_periodic_write(
         file_number: ::std::os::raw::c_int,
         B: ::std::os::raw::c_int,
@@ -2202,6 +3403,15 @@ extern "C" {
     ) -> ::std::os::raw::c_int;
 }
 extern "C" {
+    /// modes: [ r - m ]
+    /// arguments: 
+    /// -> `fn`(`int`): CGNS file index number.
+    /// -> `B`(`int`): Base index number, where 1 &le; `B` &le; `nbases`.
+    /// -> `Z`(`int`): Zone index number, where 1 &le; `Z` &le; `nzones`.
+    /// -> `I`(`int`): Grid connectivity index number, where 1 &le; `I` &le; `nconns` for the "`cg_conn`" functions, and 1 &le; `I` &le; `n1to1` for the "`cg_1to1`" functions.
+    /// <- `RotationCenter`(`float*`): An array of size `phys_dim` defining the coordinates of the origin for defining the rotation angle between the periodic interfaces. (`phys_dim` is the number of coordinates required to define a vector in the field.) (In Fortran, this is an array of Real*4 values.)
+    /// <- `RotationAngle`(`float*`): An array of size `phys_dim` defining the rotation angle from the current interface to the connecting interface. If rotating about more than one axis, the rotation is performed first about the x-axis, then the y-axis, then the z-axis. (In Fortran, this is an array of Real*4 values.)
+    /// <- `Translation`(`float*`): An array of size `phys_dim` defining the translation from the current interface to the connecting interface. (In Fortran, this is an array of Real*4 values.)
     pub fn cg_1to1_periodic_read(
         file_number: ::std::os::raw::c_int,
         B: ::std::os::raw::c_int,
@@ -2213,6 +3423,14 @@ extern "C" {
     ) -> ::std::os::raw::c_int;
 }
 extern "C" {
+    /// Read data for averaging interface
+    /// modes: [ r - m ]
+    /// arguments: 
+    /// -> `fn`(`int`): CGNS file index number.
+    /// -> `B`(`int`): Base index number, where 1 &le; `B` &le; `nbases`.
+    /// -> `Z`(`int`): Zone index number, where 1 &le; `Z` &le; `nzones`.
+    /// -> `I`(`int`): Grid connectivity index number, where 1 &le; `I` &le; `nconns` for the "`cg_conn`" functions, and 1 &le; `I` &le; `n1to1` for the "`cg_1to1`" functions.
+    /// <- `AverageInterfaceType`(`AverageInterfaceType_t*`): The type of averaging to be done. Valid types are `CG_Null`, `CG_UserDefined`, `AverageAll`, `AverageCircumferential`, `AverageRadial`, `AverageI`, `AverageJ`, and `AverageK`.
     pub fn cg_conn_average_read(
         file_number: ::std::os::raw::c_int,
         B: ::std::os::raw::c_int,
@@ -2222,6 +3440,13 @@ extern "C" {
     ) -> ::std::os::raw::c_int;
 }
 extern "C" {
+    /// modes: [ - w m ]
+    /// arguments: 
+    /// -> `fn`(`int`): CGNS file index number.
+    /// -> `B`(`int`): Base index number, where 1 &le; `B` &le; `nbases`.
+    /// -> `Z`(`int`): Zone index number, where 1 &le; `Z` &le; `nzones`.
+    /// -> `I`(`int`): Grid connectivity index number, where 1 &le; `I` &le; `nconns` for the "`cg_conn`" functions, and 1 &le; `I` &le; `n1to1` for the "`cg_1to1`" functions.
+    /// -> `AverageInterfaceType`(`AverageInterfaceType_t`): The type of averaging to be done. Valid types are `CG_Null`, `CG_UserDefined`, `AverageAll`, `AverageCircumferential`, `AverageRadial`, `AverageI`, `AverageJ`, and `AverageK`.
     pub fn cg_conn_average_write(
         file_number: ::std::os::raw::c_int,
         B: ::std::os::raw::c_int,
@@ -2231,6 +3456,13 @@ extern "C" {
     ) -> ::std::os::raw::c_int;
 }
 extern "C" {
+    /// modes: [ - w m ]
+    /// arguments: 
+    /// -> `fn`(`int`): CGNS file index number.
+    /// -> `B`(`int`): Base index number, where 1 &le; `B` &le; `nbases`.
+    /// -> `Z`(`int`): Zone index number, where 1 &le; `Z` &le; `nzones`.
+    /// -> `I`(`int`): Grid connectivity index number, where 1 &le; `I` &le; `nconns` for the "`cg_conn`" functions, and 1 &le; `I` &le; `n1to1` for the "`cg_1to1`" functions.
+    /// -> `AverageInterfaceType`(`AverageInterfaceType_t`): The type of averaging to be done. Valid types are `CG_Null`, `CG_UserDefined`, `AverageAll`, `AverageCircumferential`, `AverageRadial`, `AverageI`, `AverageJ`, and `AverageK`.
     pub fn cg_1to1_average_write(
         file_number: ::std::os::raw::c_int,
         B: ::std::os::raw::c_int,
@@ -2240,6 +3472,13 @@ extern "C" {
     ) -> ::std::os::raw::c_int;
 }
 extern "C" {
+    /// modes: [ r - m ]
+    /// arguments: 
+    /// -> `fn`(`int`): CGNS file index number.
+    /// -> `B`(`int`): Base index number, where 1 &le; `B` &le; `nbases`.
+    /// -> `Z`(`int`): Zone index number, where 1 &le; `Z` &le; `nzones`.
+    /// -> `I`(`int`): Grid connectivity index number, where 1 &le; `I` &le; `nconns` for the "`cg_conn`" functions, and 1 &le; `I` &le; `n1to1` for the "`cg_1to1`" functions.
+    /// <- `AverageInterfaceType`(`AverageInterfaceType_t*`): The type of averaging to be done. Valid types are `CG_Null`, `CG_UserDefined`, `AverageAll`, `AverageCircumferential`, `AverageRadial`, `AverageI`, `AverageJ`, and `AverageK`.
     pub fn cg_1to1_average_read(
         file_number: ::std::os::raw::c_int,
         B: ::std::os::raw::c_int,
@@ -2249,6 +3488,10 @@ extern "C" {
     ) -> ::std::os::raw::c_int;
 }
 extern "C" {
+    /// modes: [ r w m ]
+    /// arguments: 
+    /// -> `fn`(`int`): CGNS file index number. <br><br>
+    /// -> `B`(`int`): Base index number, where 1 &le; `B` &le; `nbases`. <br><br>
     pub fn cg_goto(
         file_number: ::std::os::raw::c_int,
         B: ::std::os::raw::c_int,
@@ -2263,18 +3506,32 @@ extern "C" {
     ) -> ::std::os::raw::c_int;
 }
 extern "C" {
+    /// modes: [ r w m ]
+    /// arguments: 
+    /// -> `fn`(`int`): CGNS file index number. <br><br>
     pub fn cg_gorel(file_number: ::std::os::raw::c_int, ...) -> ::std::os::raw::c_int;
 }
 extern "C" {
     pub fn cg_gorel_f08(file_number: ::std::os::raw::c_int, ...) -> ::std::os::raw::c_int;
 }
 extern "C" {
+    /// modes: [ r w m ]
+    /// arguments: 
+    /// -> `fn`(`int`): CGNS file index number. <br><br>
+    /// -> `char `(`const`): undefined
     pub fn cg_gopath(
         file_number: ::std::os::raw::c_int,
         path: *const ::std::os::raw::c_char,
     ) -> ::std::os::raw::c_int;
 }
 extern "C" {
+    /// modes: [ r w m ]
+    /// arguments: 
+    /// -> `fn`(`int`): CGNS file index number. <br><br>
+    /// -> `B`(`int`): Base index number, where 1 &le; `B` &le; `nbases`. <br><br>
+    /// -> `depth`(`int`): Depth of the path list. The maximum depth is defined in <i>cgnslib.h</i> by `CG_MAX_GOTO_DEPTH`, and is currently equal to 20. <br><br>
+    /// -> `label`(`char**`): Array of node labels for the path. This argument may be passed as `NULL` to `cg_where()`, otherwise it must be dimensioned by the calling program. The maximum size required is `label[MAX_GO_TO_DEPTH][33]`. You may call `cg_where()` with both `label` and `index` set to `NULL` in order to get the current depth, then dimension to that value. <br><br>
+    /// -> `index`(`int*`): Array of node indices for the path. This argument may be passed as `NULL` to `cg_where()`, otherwise it must be dimensioned by the calling program. The maximum size required is `index[MAX_GO_TO_DEPTH]`. You may call `cg_where()` with both `label` and `index` set to `NULL` in order to get the current depth, then dimension to that value. <br><br>
     pub fn cg_golist(
         file_number: ::std::os::raw::c_int,
         B: ::std::os::raw::c_int,
@@ -2284,6 +3541,14 @@ extern "C" {
     ) -> ::std::os::raw::c_int;
 }
 extern "C" {
+    /// Get path to current node
+    /// modes: [ r w m ]
+    /// arguments: 
+    /// <- `fn`(`int*`): CGNS file index number. <br><br>
+    /// <- `B`(`int*`): Base index number, where 1 &le; `B` &le; `nbases`. <br><br>
+    /// <- `depth`(`int*`): Depth of the path list. The maximum depth is defined in <i>cgnslib.h</i> by `CG_MAX_GOTO_DEPTH`, and is currently equal to 20. <br><br>
+    /// <- `label`(`char**`): Array of node labels for the path. This argument may be passed as `NULL` to `cg_where()`, otherwise it must be dimensioned by the calling program. The maximum size required is `label[MAX_GO_TO_DEPTH][33]`. You may call `cg_where()` with both `label` and `index` set to `NULL` in order to get the current depth, then dimension to that value. <br><br>
+    /// <- `index`(`int*`): Array of node indices for the path. This argument may be passed as `NULL` to `cg_where()`, otherwise it must be dimensioned by the calling program. The maximum size required is `index[MAX_GO_TO_DEPTH]`. You may call `cg_where()` with both `label` and `index` set to `NULL` in order to get the current depth, then dimension to that value. <br><br>
     pub fn cg_where(
         file_number: *mut ::std::os::raw::c_int,
         B: *mut ::std::os::raw::c_int,
@@ -2293,27 +3558,51 @@ extern "C" {
     ) -> ::std::os::raw::c_int;
 }
 extern "C" {
+    /// modes: [ r - m ]
+    /// arguments: 
+    /// <- `niterations`(`int*`): Number of iterations for which convergence information is recorded.
+    /// <- `NormDefinitions`(`char**`): Description of the convergence information recorded in the data arrays.
     pub fn cg_convergence_read(
         iterations: *mut ::std::os::raw::c_int,
         NormDefinitions: *mut *mut ::std::os::raw::c_char,
     ) -> ::std::os::raw::c_int;
 }
 extern "C" {
+    /// modes: [ - w m ]
+    /// arguments: 
+    /// -> `niterations`(`int`): Number of iterations for which convergence information is recorded.
+    /// -> `NormDefinitions`(`char*`): Description of the convergence information recorded in the data arrays.
     pub fn cg_convergence_write(
         iterations: ::std::os::raw::c_int,
         NormDefinitions: *const ::std::os::raw::c_char,
     ) -> ::std::os::raw::c_int;
 }
 extern "C" {
+    /// Read text description of reference state.
+    /// modes: [ r - m ]
+    /// arguments: 
+    /// <- `StateDescription`(`char**`): Text description of reference state.
     pub fn cg_state_read(
         StateDescription: *mut *mut ::std::os::raw::c_char,
     ) -> ::std::os::raw::c_int;
 }
 extern "C" {
+    /// modes: [ - w m ]
+    /// arguments: 
+    /// -> `StateDescription`(`char*`): Text description of reference state.
     pub fn cg_state_write(StateDescription: *const ::std::os::raw::c_char)
         -> ::std::os::raw::c_int;
 }
 extern "C" {
+    /// modes: [ r - m ]
+    /// arguments: 
+    /// <- `EquationDimension`(`int*`): Dimensionality of the governing equations; it is the number of spatial variables describing the flow.
+    /// <- `GoverningEquationsFlag`(`int*`): Flag indicating whether or not this `FlowEquationSet_t` node includes the definition of the governing equations; 0 if it doesn't, 1 if it does.
+    /// <- `GasModelFlag`(`int*`): Flag indicating whether or not this `FlowEquationSet_t` node includes the definition of a gas model; 0 if it doesn't, 1 if it does.
+    /// <- `ViscosityModelFlag`(`int*`): Flag indicating whether or not this `FlowEquationSet_t` node includes the definition of a viscosity model; 0 if it doesn't, 1 if it does.
+    /// <- `ThermalConductModelFlag`(`int*`): Flag indicating whether or not this `FlowEquationSet_t` node includes the definition of a thermal conductivity model; 0 if it doesn't, 1 if it does.
+    /// <- `TurbulenceClosureFlag`(`int*`): Flag indicating whether or not this `FlowEquationSet_t` node includes the definition of the turbulence closure; 0 if it doesn't, 1 if it does.
+    /// <- `TurbulenceModelFlag`(`int*`): Flag indicating whether or not this `FlowEquationSet_t` node includes the definition of a turbulence model; 0 if it doesn't, 1 if it does.
     pub fn cg_equationset_read(
         EquationDimension: *mut ::std::os::raw::c_int,
         GoverningEquationsFlag: *mut ::std::os::raw::c_int,
@@ -2325,12 +3614,22 @@ extern "C" {
     ) -> ::std::os::raw::c_int;
 }
 extern "C" {
+    /// modes: [ r - m ]
+    /// arguments: 
+    /// <- `ThermalRelaxationFlag`(`int*`): Flag indicating whether or not this `FlowEquationSet_t` node includes the definition of a thermal relaxation model; 0 if it doesn't, 1 if it does.
+    /// <- `ChemicalKineticsFlag`(`int*`): Flag indicating whether or not this `FlowEquationSet_t` node includes the definition of a chemical kinetics model; 0 if it doesn't, 1 if it does.
     pub fn cg_equationset_chemistry_read(
         ThermalRelaxationFlag: *mut ::std::os::raw::c_int,
         ChemicalKineticsFlag: *mut ::std::os::raw::c_int,
     ) -> ::std::os::raw::c_int;
 }
 extern "C" {
+    /// Read electromagnetic equation set info
+    /// modes: [ r - m ]
+    /// arguments: 
+    /// <- `ElecFldModelFlag`(`int*`): Flag indicating whether or not this `FlowEquationSet_t` node includes the definition of an electric field model for electromagnetic flows;; 0 if it doesn't, 1 if it does.
+    /// <- `MagnFldModelFlag`(`int*`): Flag indicating whether or not this `FlowEquationSet_t` node includes the definition of a magnetic field model for electromagnetic flows;; 0 if it doesn't, 1 if it does.
+    /// <- `ConductivityModelFlag`(`int*`): Flag indicating whether or not this `FlowEquationSet_t` node includes the definition of a conductivity model for electromagnetic flows; 0 if it doesn't, 1 if it does.
     pub fn cg_equationset_elecmagn_read(
         ElecFldModelFlag: *mut ::std::os::raw::c_int,
         MagnFldModelFlag: *mut ::std::os::raw::c_int,
@@ -2338,39 +3637,74 @@ extern "C" {
     ) -> ::std::os::raw::c_int;
 }
 extern "C" {
+    /// modes: [ - w m ]
+    /// arguments: 
+    /// -> `EquationDimension`(`int`): Dimensionality of the governing equations; it is the number of spatial variables describing the flow.
     pub fn cg_equationset_write(EquationDimension: ::std::os::raw::c_int) -> ::std::os::raw::c_int;
 }
 extern "C" {
+    /// modes: [ r - m ]
+    /// arguments: 
+    /// <- `EquationsType`(`GoverningEquationsType_t*`): Type of governing equations. The admissible types are `CG_Null`, `CG_UserDefined`, `FullPotential`, `Euler`, `NSLaminar`, `NSTurbulent`, `NSLaminarIncompressible`, and `NSTurbulentIncompressible`.
     pub fn cg_governing_read(EquationsType: *mut GoverningEquationsType_t)
         -> ::std::os::raw::c_int;
 }
 extern "C" {
+    /// modes: [ - w m ]
+    /// arguments: 
+    /// -> `Equationstype`(`GoverningEquationsType_t`): undefined
     pub fn cg_governing_write(Equationstype: GoverningEquationsType_t) -> ::std::os::raw::c_int;
 }
 extern "C" {
+    /// Read flags for diffusion terms
+    /// modes: [ r - m ]
+    /// arguments: 
+    /// <- `diffusion_model`(`int*`): Flags defining which diffusion terms are included in the governing equations. This is only applicable to the Navier-Stokes equations with structured grids. See the <a href="../sids/floweqn.html#DiffusionModel">discussion in the SIDS manual</a> for details.
     pub fn cg_diffusion_read(diffusion_model: *mut ::std::os::raw::c_int) -> ::std::os::raw::c_int;
 }
 extern "C" {
+    /// modes: [ - w m ]
+    /// arguments: 
+    /// -> `diffusion_model`(`int*`): Flags defining which diffusion terms are included in the governing equations. This is only applicable to the Navier-Stokes equations with structured grids. See the <a href="../sids/floweqn.html#DiffusionModel">discussion in the SIDS manual</a> for details.
     pub fn cg_diffusion_write(
         diffusion_model: *const ::std::os::raw::c_int,
     ) -> ::std::os::raw::c_int;
 }
 extern "C" {
+    /// Read auxiliary model types
+    /// modes: [ r - m ]
+    /// arguments: 
+    /// -> `ModelLabel`(`char*`): The CGNS label for the model being defined. The models supported by CGNS are: <ul> <li>`GasModel_t` <li>`ViscosityModel_t` <li>`ThermalConductivityModel_t` <li>`TurbulenceClosure_t` <li>`TurbulenceModel_t` <li>`ThermalRelaxationModel_t` <li>`ChemicalKineticsModel_t` <li>`EMElectricFieldModel_t` <li>`EMMagneticFieldModel_t` <li>`EMConductivityModel_t` </ul>
+    /// <- `ModelType`(`ModelType_t*`): One of the model types (listed below) allowed for the `ModelLabel` selected.
     pub fn cg_model_read(
         ModelLabel: *const ::std::os::raw::c_char,
         ModelType: *mut ModelType_t,
     ) -> ::std::os::raw::c_int;
 }
 extern "C" {
+    /// modes: [ - w m ]
+    /// arguments: 
+    /// -> `ModelLabel`(`char*`): The CGNS label for the model being defined. The models supported by CGNS are: <ul> <li>`GasModel_t` <li>`ViscosityModel_t` <li>`ThermalConductivityModel_t` <li>`TurbulenceClosure_t` <li>`TurbulenceModel_t` <li>`ThermalRelaxationModel_t` <li>`ChemicalKineticsModel_t` <li>`EMElectricFieldModel_t` <li>`EMMagneticFieldModel_t` <li>`EMConductivityModel_t` </ul>
+    /// -> `ModelType`(`ModelType_t`): One of the model types (listed below) allowed for the `ModelLabel` selected.
     pub fn cg_model_write(
         ModelLabel: *const ::std::os::raw::c_char,
         ModelType: ModelType_t,
     ) -> ::std::os::raw::c_int;
 }
 extern "C" {
+    /// modes: [ r - m ]
+    /// arguments: 
+    /// <- `narrays`(`int*`): Number of `DataArray_t` nodes under the current node.
     pub fn cg_narrays(narrays: *mut ::std::os::raw::c_int) -> ::std::os::raw::c_int;
 }
 extern "C" {
+    /// modes: [ r - m ]
+    /// arguments: 
+    /// -> `A`(`int`): Data array index, where 1 &le; `A` &le; `narrays`.
+    /// <- `arrayname`(`char*`): Name of the `DataArray_t` node.
+    /// <- `datatype`(`DataType_t*`): Type of data held in the `DataArray_t` node. The admissible types are `Integer`, `LongInteger`, `RealSingle`, `RealDouble`, and `Character`.
+    /// <- `rank`(`int*`): Number of dimensions of array in file (max 12). See <a href="../cgio/node.html">Node Management Routines</a> in CGIO User's Guide.
+    /// <- `dimensions`(`cgsize_t*`): Dimensions of array in file.
     pub fn cg_array_info(
         A: ::std::os::raw::c_int,
         ArrayName: *mut ::std::os::raw::c_char,
@@ -2380,12 +3714,21 @@ extern "C" {
     ) -> ::std::os::raw::c_int;
 }
 extern "C" {
+    /// modes: [ r - m ]
+    /// arguments: 
+    /// -> `A`(`int`): Data array index, where 1 &le; `A` &le; `narrays`.
+    /// <- `data`(`void*`): The data array in memory.
     pub fn cg_array_read(
         A: ::std::os::raw::c_int,
         Data: *mut ::std::os::raw::c_void,
     ) -> ::std::os::raw::c_int;
 }
 extern "C" {
+    /// modes: [ r - m ]
+    /// arguments: 
+    /// -> `A`(`int`): Data array index, where 1 &le; `A` &le; `narrays`.
+    /// -> `datatype`(`DataType_t`): Type of data held in the `DataArray_t` node. The admissible types are `Integer`, `LongInteger`, `RealSingle`, `RealDouble`, and `Character`.
+    /// <- `data`(`void*`): The data array in memory.
     pub fn cg_array_read_as(
         A: ::std::os::raw::c_int,
         type_: DataType_t,
@@ -2393,6 +3736,18 @@ extern "C" {
     ) -> ::std::os::raw::c_int;
 }
 extern "C" {
+    /// Read subset of data array to a shaped array
+    /// modes: [ r - m ]
+    /// arguments: 
+    /// -> `A`(`int`): Data array index, where 1 &le; `A` &le; `narrays`.
+    /// -> `range_min`(`cgsize_t*`): Lower range index in file (eg., `imin, jmin, kmin`).
+    /// -> `range_max`(`cgsize_t*`): Upper range index in file (eg., `imax, jmax, kmax`).
+    /// -> `mem_datatype`(`DataType_t`): The type of data held in memory. The admissible types are `Integer`, `LongInteger`, `RealSingle`, `RealDouble`, and `Character`.
+    /// -> `mem_rank`(`int`): Number of dimensions of array in memory (max 12).
+    /// -> `mem_dimensions`(`cgsize_t*`): Dimensions of array in memory.
+    /// -> `mem_range_min`(`cgsize_t*`): Lower range index in memory (eg., `imin, jmin, kmin`).
+    /// -> `mem_range_max`(`cgsize_t*`): Upper range index in memory (eg., `imax, jmax, kmax`).
+    /// <- `data`(`void*`): The data array in memory.
     pub fn cg_array_general_read(
         A: ::std::os::raw::c_int,
         s_rmin: *const ::std::os::raw::c_int,
@@ -2406,6 +3761,13 @@ extern "C" {
     ) -> ::std::os::raw::c_int;
 }
 extern "C" {
+    /// modes: [ - w m ]
+    /// arguments: 
+    /// -> `arrayname`(`char*`): Name of the `DataArray_t` node.
+    /// -> `datatype`(`DataType_t`): Type of data held in the `DataArray_t` node. The admissible types are `Integer`, `LongInteger`, `RealSingle`, `RealDouble`, and `Character`.
+    /// -> `rank`(`int`): Number of dimensions of array in file (max 12). See <a href="../cgio/node.html">Node Management Routines</a> in CGIO User's Guide.
+    /// -> `dimensions`(`cgsize_t*`): Dimensions of array in file.
+    /// -> `data`(`void*`): The data array in memory.
     pub fn cg_array_write(
         ArrayName: *const ::std::os::raw::c_char,
         DataType: DataType_t,
@@ -2415,6 +3777,20 @@ extern "C" {
     ) -> ::std::os::raw::c_int;
 }
 extern "C" {
+    /// modes: [ - w m ]
+    /// arguments: 
+    /// -> `arrayname`(`char*`): Name of the `DataArray_t` node.
+    /// -> `datatype`(`DataType_t`): Type of data held in the `DataArray_t` node. The admissible types are `Integer`, `LongInteger`, `RealSingle`, `RealDouble`, and `Character`.
+    /// -> `rank`(`int`): Number of dimensions of array in file (max 12). See <a href="../cgio/node.html">Node Management Routines</a> in CGIO User's Guide.
+    /// -> `dimensions`(`cgsize_t*`): Dimensions of array in file.
+    /// -> `range_min`(`cgsize_t*`): Lower range index in file (eg., `imin, jmin, kmin`).
+    /// -> `range_max`(`cgsize_t*`): Upper range index in file (eg., `imax, jmax, kmax`).
+    /// -> `mem_datatype`(`DataType_t`): The type of data held in memory. The admissible types are `Integer`, `LongInteger`, `RealSingle`, `RealDouble`, and `Character`.
+    /// -> `mem_rank`(`int`): Number of dimensions of array in memory (max 12).
+    /// -> `mem_dimensions`(`cgsize_t*`): Dimensions of array in memory.
+    /// -> `mem_range_min`(`cgsize_t*`): Lower range index in memory (eg., `imin, jmin, kmin`).
+    /// -> `mem_range_max`(`cgsize_t*`): Upper range index in memory (eg., `imax, jmax, kmax`).
+    /// -> `data`(`void*`): The data array in memory.
     pub fn cg_array_general_write(
         arrayname: *const ::std::os::raw::c_char,
         s_type: DataType_t,
@@ -2431,43 +3807,79 @@ extern "C" {
     ) -> ::std::os::raw::c_int;
 }
 extern "C" {
+    /// modes: [ r - m ]
+    /// arguments: 
+    /// <- `nuserdata`(`int*`): Number of `UserDefinedData_t` nodes under current node.
     pub fn cg_nuser_data(nuser_data: *mut ::std::os::raw::c_int) -> ::std::os::raw::c_int;
 }
 extern "C" {
+    /// modes: [ r - m ]
+    /// arguments: 
+    /// -> `Index`(`int`): User-defined data index number, where 1 &le; `Index` &le; `nuserdata`.
+    /// <- `Name`(`char*`): Name of the `UserDefinedData_t` node.
     pub fn cg_user_data_read(
         Index: ::std::os::raw::c_int,
         user_data_name: *mut ::std::os::raw::c_char,
     ) -> ::std::os::raw::c_int;
 }
 extern "C" {
+    /// modes: [ - w m ]
+    /// arguments: 
+    /// -> `Name`(`char*`): Name of the `UserDefinedData_t` node.
     pub fn cg_user_data_write(
         user_data_name: *const ::std::os::raw::c_char,
     ) -> ::std::os::raw::c_int;
 }
 extern "C" {
+    /// modes: [ r - m ]
+    /// arguments: 
+    /// <- `nintegrals`(`int*`): Number of `IntegralData_t` nodes under current node.
     pub fn cg_nintegrals(nintegrals: *mut ::std::os::raw::c_int) -> ::std::os::raw::c_int;
 }
 extern "C" {
+    /// modes: [ r - m ]
+    /// arguments: 
+    /// -> `Index`(`int`): Integral data index number, where 1 &le; `Index` &le; `nintegrals`.
+    /// <- `Name`(`char*`): Name of the `IntegralData_t` data structure.
     pub fn cg_integral_read(
         IntegralDataIndex: ::std::os::raw::c_int,
         IntegralDataName: *mut ::std::os::raw::c_char,
     ) -> ::std::os::raw::c_int;
 }
 extern "C" {
+    /// modes: [ - w m ]
+    /// arguments: 
+    /// -> `Name`(`char*`): Name of the `IntegralData_t` data structure.
     pub fn cg_integral_write(
         IntegralDataName: *const ::std::os::raw::c_char,
     ) -> ::std::os::raw::c_int;
 }
 extern "C" {
+    /// Read number of rind layers
+    /// modes: [ r - m ]
+    /// arguments: 
+    /// <- `RindData`(`int*`): Number of rind layers for each computational direction (structured grid) or number of rind points or elements (unstructured grid).  For structured grids, the low/high sides have unit stride in the array (e.g., `[NRindLowI, NRindHighI, NRindLowJ, NRindHighJ, NRindLowK, NRindHighK]`).
     pub fn cg_rind_read(RindData: *mut ::std::os::raw::c_int) -> ::std::os::raw::c_int;
 }
 extern "C" {
+    /// modes: [ - w m ]
+    /// arguments: 
+    /// -> `RindData`(`int*`): Number of rind layers for each computational direction (structured grid) or number of rind points or elements (unstructured grid).  For structured grids, the low/high sides have unit stride in the array (e.g., `[NRindLowI, NRindHighI, NRindLowJ, NRindHighJ, NRindLowK, NRindHighK]`).
     pub fn cg_rind_write(RindData: *const ::std::os::raw::c_int) -> ::std::os::raw::c_int;
 }
 extern "C" {
+    /// modes: [ r - m ]
+    /// arguments: 
+    /// <- `ndescriptors`(`int*`): Number of `Descriptor_t` nodes under the current node.
     pub fn cg_ndescriptors(ndescriptors: *mut ::std::os::raw::c_int) -> ::std::os::raw::c_int;
 }
 extern "C" {
+    /// Read descriptive text
+    /// modes: [ r - m ]
+    /// arguments: 
+    /// -> `D`(`int`): Descriptor index number, where 1 &le; `D` &le; `ndescriptors`.
+    /// <- `name`(`char*`): Name of the `Descriptor_t` node.
+    /// <- `text`(`char**`): Description held in the `Descriptor_t` node.
     pub fn cg_descriptor_read(
         descr_no: ::std::os::raw::c_int,
         descr_name: *mut ::std::os::raw::c_char,
@@ -2475,15 +3887,29 @@ extern "C" {
     ) -> ::std::os::raw::c_int;
 }
 extern "C" {
+    /// modes: [ - w m ]
+    /// arguments: 
+    /// -> `name`(`char*`): Name of the `Descriptor_t` node.
+    /// -> `text`(`char*`): Description held in the `Descriptor_t` node.
     pub fn cg_descriptor_write(
         descr_name: *const ::std::os::raw::c_char,
         descr_text: *const ::std::os::raw::c_char,
     ) -> ::std::os::raw::c_int;
 }
 extern "C" {
+    /// modes: [ r - m ]
+    /// arguments: 
+    /// <- `nunits`(`int*`): Number of units used in the file (i.e., either 5 or 8).
     pub fn cg_nunits(nunits: *mut ::std::os::raw::c_int) -> ::std::os::raw::c_int;
 }
 extern "C" {
+    /// modes: [ r - m ]
+    /// arguments: 
+    /// <- `mass`(`MassUnits_t*`): Mass units. Admissible values are `CG_Null`, `CG_UserDefined`, `Kilogram`, `Gram`, `Slug`, and `PoundMass`.
+    /// <- `length`(`LengthUnits_t*`): Length units. Admissible values are `CG_Null`, `CG_UserDefined`, `Meter`, `Centimeter`, `Millimeter`, `Foot`, and `Inch`.
+    /// <- `time`(`TimeUnits_t*`): Time units. Admissible values are `CG_Null`, `CG_UserDefined`, and `Second`.
+    /// <- `temperature`(`TemperatureUnits_t*`): Temperature units. Admissible values are `CG_Null`, `CG_UserDefined`, `Kelvin`, `Celsius`, `Rankine`, and `Fahrenheit`.
+    /// <- `angle`(`AngleUnits_t*`): Angle units. Admissible values are `CG_Null`, `CG_UserDefined`, `Degree`, and `Radian`.
     pub fn cg_units_read(
         mass: *mut MassUnits_t,
         length: *mut LengthUnits_t,
@@ -2493,6 +3919,13 @@ extern "C" {
     ) -> ::std::os::raw::c_int;
 }
 extern "C" {
+    /// modes: [ - w m ]
+    /// arguments: 
+    /// -> `mass`(`MassUnits_t`): Mass units. Admissible values are `CG_Null`, `CG_UserDefined`, `Kilogram`, `Gram`, `Slug`, and `PoundMass`.
+    /// -> `length`(`LengthUnits_t`): Length units. Admissible values are `CG_Null`, `CG_UserDefined`, `Meter`, `Centimeter`, `Millimeter`, `Foot`, and `Inch`.
+    /// -> `time`(`TimeUnits_t`): Time units. Admissible values are `CG_Null`, `CG_UserDefined`, and `Second`.
+    /// -> `temperature`(`TemperatureUnits_t`): Temperature units. Admissible values are `CG_Null`, `CG_UserDefined`, `Kelvin`, `Celsius`, `Rankine`, and `Fahrenheit`.
+    /// -> `angle`(`AngleUnits_t`): Angle units. Admissible values are `CG_Null`, `CG_UserDefined`, `Degree`, and `Radian`.
     pub fn cg_units_write(
         mass: MassUnits_t,
         length: LengthUnits_t,
@@ -2502,6 +3935,17 @@ extern "C" {
     ) -> ::std::os::raw::c_int;
 }
 extern "C" {
+    /// Read all eight dimensional units
+    /// modes: [ r - m ]
+    /// arguments: 
+    /// <- `mass`(`MassUnits_t*`): Mass units. Admissible values are `CG_Null`, `CG_UserDefined`, `Kilogram`, `Gram`, `Slug`, and `PoundMass`.
+    /// <- `length`(`LengthUnits_t*`): Length units. Admissible values are `CG_Null`, `CG_UserDefined`, `Meter`, `Centimeter`, `Millimeter`, `Foot`, and `Inch`.
+    /// <- `time`(`TimeUnits_t*`): Time units. Admissible values are `CG_Null`, `CG_UserDefined`, and `Second`.
+    /// <- `temperature`(`TemperatureUnits_t*`): Temperature units. Admissible values are `CG_Null`, `CG_UserDefined`, `Kelvin`, `Celsius`, `Rankine`, and `Fahrenheit`.
+    /// <- `angle`(`AngleUnits_t*`): Angle units. Admissible values are `CG_Null`, `CG_UserDefined`, `Degree`, and `Radian`.
+    /// <- `current`(`ElectricCurrentUnits_t*`): Electric current units. Admissible values are `CG_Null`, `CG_UserDefined`, `Ampere`, `Abampere`, `Statampere`, `Edison`, and `auCurrent`.
+    /// <- `amount`(`SubstanceAmountUnits_t*`): Substance amount units. Admissible values are `CG_Null`, `CG_UserDefined`, `Mole`, `Entities`, `StandardCubicFoot`, and `StandardCubicMeter`.
+    /// <- `intensity`(`LuminousIntensityUnits_t*`): Luminous intensity units. Admissible values are `CG_Null`, `CG_UserDefined`, `Candela`, `Candle`, `Carcel`, `Hefner`, and `Violle`.
     pub fn cg_unitsfull_read(
         mass: *mut MassUnits_t,
         length: *mut LengthUnits_t,
@@ -2514,6 +3958,16 @@ extern "C" {
     ) -> ::std::os::raw::c_int;
 }
 extern "C" {
+    /// modes: [ - w m ]
+    /// arguments: 
+    /// -> `mass`(`MassUnits_t`): Mass units. Admissible values are `CG_Null`, `CG_UserDefined`, `Kilogram`, `Gram`, `Slug`, and `PoundMass`.
+    /// -> `length`(`LengthUnits_t`): Length units. Admissible values are `CG_Null`, `CG_UserDefined`, `Meter`, `Centimeter`, `Millimeter`, `Foot`, and `Inch`.
+    /// -> `time`(`TimeUnits_t`): Time units. Admissible values are `CG_Null`, `CG_UserDefined`, and `Second`.
+    /// -> `temperature`(`TemperatureUnits_t`): Temperature units. Admissible values are `CG_Null`, `CG_UserDefined`, `Kelvin`, `Celsius`, `Rankine`, and `Fahrenheit`.
+    /// -> `angle`(`AngleUnits_t`): Angle units. Admissible values are `CG_Null`, `CG_UserDefined`, `Degree`, and `Radian`.
+    /// -> `current`(`ElectricCurrentUnits_t`): Electric current units. Admissible values are `CG_Null`, `CG_UserDefined`, `Ampere`, `Abampere`, `Statampere`, `Edison`, and `auCurrent`.
+    /// -> `amount`(`SubstanceAmountUnits_t`): Substance amount units. Admissible values are `CG_Null`, `CG_UserDefined`, `Mole`, `Entities`, `StandardCubicFoot`, and `StandardCubicMeter`.
+    /// -> `intensity`(`LuminousIntensityUnits_t`): Luminous intensity units. Admissible values are `CG_Null`, `CG_UserDefined`, `Candela`, `Candle`, `Carcel`, `Hefner`, and `Violle`.
     pub fn cg_unitsfull_write(
         mass: MassUnits_t,
         length: LengthUnits_t,
@@ -2526,68 +3980,130 @@ extern "C" {
     ) -> ::std::os::raw::c_int;
 }
 extern "C" {
+    /// modes: [ r - m ]
+    /// arguments: 
+    /// <- `DataType`(`DataType_t*`): Data type in which the exponents are recorded. Admissible data types for the exponents are `RealSingle` and `RealDouble`.
     pub fn cg_exponents_info(DataType: *mut DataType_t) -> ::std::os::raw::c_int;
 }
 extern "C" {
+    /// modes: [ r - m ]
+    /// arguments: 
+    /// <- `nexponents`(`int*`): Number of exponents used in the file (i.e., either 5 or 8).
     pub fn cg_nexponents(numexp: *mut ::std::os::raw::c_int) -> ::std::os::raw::c_int;
 }
 extern "C" {
+    /// modes: [ r - m ]
+    /// arguments: 
+    /// <- `exponents`(`void*`): Exponents for the dimensional units for mass, length, time, temperature, angle, electric current, substance amount, and luminous intensity, in that order.
     pub fn cg_exponents_read(exponents: *mut ::std::os::raw::c_void) -> ::std::os::raw::c_int;
 }
 extern "C" {
+    /// modes: [ - w m ]
+    /// arguments: 
+    /// -> `DataType`(`DataType_t`): Data type in which the exponents are recorded. Admissible data types for the exponents are `RealSingle` and `RealDouble`.
+    /// -> `exponents`(`void*`): Exponents for the dimensional units for mass, length, time, temperature, angle, electric current, substance amount, and luminous intensity, in that order.
     pub fn cg_exponents_write(
         DataType: DataType_t,
         exponents: *const ::std::os::raw::c_void,
     ) -> ::std::os::raw::c_int;
 }
 extern "C" {
+    /// Read all eight dimensional exponents
+    /// modes: [ r - m ]
+    /// arguments: 
+    /// <- `exponents`(`void*`): Exponents for the dimensional units for mass, length, time, temperature, angle, electric current, substance amount, and luminous intensity, in that order.
     pub fn cg_expfull_read(exponents: *mut ::std::os::raw::c_void) -> ::std::os::raw::c_int;
 }
 extern "C" {
+    /// modes: [ - w m ]
+    /// arguments: 
+    /// -> `DataType`(`DataType_t`): Data type in which the exponents are recorded. Admissible data types for the exponents are `RealSingle` and `RealDouble`.
+    /// -> `exponents`(`void*`): Exponents for the dimensional units for mass, length, time, temperature, angle, electric current, substance amount, and luminous intensity, in that order.
     pub fn cg_expfull_write(
         DataType: DataType_t,
         exponents: *const ::std::os::raw::c_void,
     ) -> ::std::os::raw::c_int;
 }
 extern "C" {
+    /// modes: [ r - m ]
+    /// arguments: 
+    /// <- `DataType`(`DataType_t*`): Data type in which the conversion factors are recorded. Admissible data types for conversion factors are `RealSingle` and `RealDouble`.
     pub fn cg_conversion_info(DataType: *mut DataType_t) -> ::std::os::raw::c_int;
 }
 extern "C" {
+    /// Read conversion factors
+    /// modes: [ r - m ]
+    /// arguments: 
+    /// <- `ConversionFactors`(`void*`): Two-element array containing the scaling and offset factors.
     pub fn cg_conversion_read(
         ConversionFactors: *mut ::std::os::raw::c_void,
     ) -> ::std::os::raw::c_int;
 }
 extern "C" {
+    /// modes: [ - w m ]
+    /// arguments: 
+    /// -> `DataType`(`DataType_t`): Data type in which the conversion factors are recorded. Admissible data types for conversion factors are `RealSingle` and `RealDouble`.
+    /// -> `ConversionFactors`(`void*`): Two-element array containing the scaling and offset factors.
     pub fn cg_conversion_write(
         DataType: DataType_t,
         ConversionFactors: *const ::std::os::raw::c_void,
     ) -> ::std::os::raw::c_int;
 }
 extern "C" {
+    /// Read data class
+    /// modes: [ r - m ]
+    /// arguments: 
+    /// <- `dataclass`(`DataClass_t*`): Data class for the nodes at this level. See below for the data classes currently supported in CGNS.
     pub fn cg_dataclass_read(dataclass: *mut DataClass_t) -> ::std::os::raw::c_int;
 }
 extern "C" {
+    /// modes: [ - w m ]
+    /// arguments: 
+    /// -> `dataclass`(`DataClass_t`): Data class for the nodes at this level. See below for the data classes currently supported in CGNS.
     pub fn cg_dataclass_write(dataclass: DataClass_t) -> ::std::os::raw::c_int;
 }
 extern "C" {
+    /// Read grid location
+    /// modes: [ r - m ]
+    /// arguments: 
+    /// <- `GridLocation`(`GridLocation_t*`): Location in the grid. The admissible locations are `CG_Null`, `CG_UserDefined`, `Vertex`, `CellCenter`, `FaceCenter`, `IFaceCenter`, `JFaceCenter`, `KFaceCenter`, and `EdgeCenter`.
     pub fn cg_gridlocation_read(GridLocation: *mut GridLocation_t) -> ::std::os::raw::c_int;
 }
 extern "C" {
+    /// modes: [ - w m ]
+    /// arguments: 
+    /// -> `GridLocation`(`GridLocation_t`): Location in the grid. The admissible locations are `CG_Null`, `CG_UserDefined`, `Vertex`, `CellCenter`, `FaceCenter`, `IFaceCenter`, `JFaceCenter`, `KFaceCenter`, and `EdgeCenter`.
     pub fn cg_gridlocation_write(GridLocation: GridLocation_t) -> ::std::os::raw::c_int;
 }
 extern "C" {
+    /// Read ordinal value
+    /// modes: [ r - m ]
+    /// arguments: 
+    /// <- `Ordinal`(`int*`): Any integer value.
     pub fn cg_ordinal_read(Ordinal: *mut ::std::os::raw::c_int) -> ::std::os::raw::c_int;
 }
 extern "C" {
+    /// modes: [ - w m ]
+    /// arguments: 
+    /// -> `Ordinal`(`int`): Any integer value.
     pub fn cg_ordinal_write(Ordinal: ::std::os::raw::c_int) -> ::std::os::raw::c_int;
 }
 extern "C" {
+    /// modes: [ r - m ]
+    /// arguments: 
+    /// <- `ptset_type`(`PointSetType_t*`): The point set type; either `PointRange` for a range of points or cells, or `PointList` for a list of discrete points or cells.
+    /// <- `npnts`(`cgsize_t*`): The number of points or cells in the point set. For a point set type of `PointRange`, `npnts` is always two. For a point set type of `PointList`, `npnts` is the number of points or cells in the list.
     pub fn cg_ptset_info(
         ptset_type: *mut PointSetType_t,
         npnts: *mut ::std::os::raw::c_int,
     ) -> ::std::os::raw::c_int;
 }
 extern "C" {
+    /// modes: [ - w m ]
+    /// arguments: 
+    /// -> `ptset_type`(`PointSetType_t`): The point set type; either `PointRange` for a range of points or cells, or `PointList` for a list of discrete points or cells.
+    /// -> `npnts`(`cgsize_t`): The number of points or cells in the point set. For a point set type of `PointRange`, `npnts` is always two. For a point set type of `PointList`, `npnts` is the number of points or cells in the list.
+    /// -> `pnts`(`cgsize_t*`): The array of point or cell indices defining the point set. There should be `npnts` values, each of dimension <a href="../sids/cgnsbase.html#IndexDimension">`IndexDimension`</a> (i.e., 1 for unstructured grids, and 2 or 3 for structured grids with 2-D or 3-D elements, respectively).
     pub fn cg_ptset_write(
         ptset_type: PointSetType_t,
         npnts: ::std::os::raw::c_int,
@@ -2595,18 +4111,35 @@ extern "C" {
     ) -> ::std::os::raw::c_int;
 }
 extern "C" {
+    /// Read point set data
+    /// modes: [ r - m ]
+    /// arguments: 
+    /// <- `pnts`(`cgsize_t*`): The array of point or cell indices defining the point set. There should be `npnts` values, each of dimension <a href="../sids/cgnsbase.html#IndexDimension">`IndexDimension`</a> (i.e., 1 for unstructured grids, and 2 or 3 for structured grids with 2-D or 3-D elements, respectively).
     pub fn cg_ptset_read(pnts: *mut ::std::os::raw::c_int) -> ::std::os::raw::c_int;
 }
 extern "C" {
+    /// modes: [ r - m ]
+    /// arguments: 
+    /// <- `path_length`(`int*`): Length of the path name of the linked node. The value 0 is returned if the node is not a link.
     pub fn cg_is_link(path_length: *mut ::std::os::raw::c_int) -> ::std::os::raw::c_int;
 }
 extern "C" {
+    /// Get path information for a link at the current location
+    /// modes: [ r - m ]
+    /// arguments: 
+    /// <- `filename`(`char**`): Name of the linked file, or empty string if the link is within the same file.
+    /// <- `link_path`(`char**`): Path name of the node which the link points to.
     pub fn cg_link_read(
         filename: *mut *mut ::std::os::raw::c_char,
         link_path: *mut *mut ::std::os::raw::c_char,
     ) -> ::std::os::raw::c_int;
 }
 extern "C" {
+    /// modes: [ - w m ]
+    /// arguments: 
+    /// -> `nodename`(`char*`): Name of the link node to create, e.g., `GridCoordinates`.
+    /// -> `filename`(`char*`): Name of the linked file, or empty string if the link is within the same file.
+    /// -> `name_in_file`(`char*`): Path name of the node which the link points to. This can be a simple or a compound name, e.g., `Base/Zone 1/GridCoordinates`.
     pub fn cg_link_write(
         nodename: *const ::std::os::raw::c_char,
         filename: *const ::std::os::raw::c_char,
@@ -2614,9 +4147,17 @@ extern "C" {
     ) -> ::std::os::raw::c_int;
 }
 extern "C" {
+    /// Delete a node
+    /// modes: [ - - m ]
+    /// arguments: 
+    /// -> `NodeName`(`char*`): Name of the child to be deleted.
     pub fn cg_delete_node(node_name: *const ::std::os::raw::c_char) -> ::std::os::raw::c_int;
 }
 extern "C" {
+    /// Release library-allocated memory
+    /// modes: [ r w m ]
+    /// arguments: 
+    /// -> `data`(`void*`): Data allocated by the Mid-Level Library.
     pub fn cg_free(data: *mut ::std::os::raw::c_void) -> ::std::os::raw::c_int;
 }
 extern "C" {
