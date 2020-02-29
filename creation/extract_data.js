@@ -10,6 +10,8 @@ let dest = require("fs")
 
 let docs = {};
 
+let inner_tables = [];
+
 get_short_explainations(input);
 get_table_data(input);
 apply_docs();
@@ -92,42 +94,91 @@ function get_short_explainations(input) {
 function get_table_data(input) {
   let tables = [];
 
-  let regex = /<table[^>]*>(([^](?!<\/table>))*[^])<\/table>/gim;
-  let match;
-  while (true) {
-    match = regex.exec(input);
-    if (!match) break;
+  let i = 0;
 
-    let table_content = match[1];
+  let n = 0;
+  let outer_table_start = undefined;
+  let inner_table_start = undefined;
+  let inner_table_end = undefined;
+  while (i < input.length) {
+    let table_start = input.indexOf("<table", i);
+    let table_end = input.indexOf("</table>", i);
 
-    let tbody_index = table_content.indexOf("<tbody>");
-    if (~tbody_index) {
-      let table_header = table_content.slice(0, tbody_index);
-      let table_body = table_content.slice(tbody_index + "<tbody>".length);
+    if (!~table_end || !~table_start) {
+      break;
+    }
 
-      tables.push([table_header, table_body]);
+    if (table_start < table_end) {
+      if (n == 0) {
+        outer_table_start = table_start;
+      } else if (n == 1) {
+        inner_table_start = table_start;
+      }
+      n++;
+      i = table_start + 1;
     } else {
-      tables.push(table_content);
+      n--;
+
+      if (n == 0) {
+        if (inner_table_start) {
+          let s = inner_table_start;
+          let e = inner_table_end;
+
+          inner_tables.push(
+            input.slice(input.indexOf(">", s + 6) + 1, e).trim()
+          );
+
+          input =
+            input.slice(0, s) +
+            "<<<" +
+            (inner_tables.length - 1) +
+            ">>>" +
+            input.slice(e + 8);
+        }
+
+        tables.push(
+          input
+            .slice(input.indexOf(">", outer_table_start + 6) + 1, table_end)
+            .trim()
+        );
+
+        outer_table_start = undefined;
+        inner_table_start = undefined;
+        inner_table_end = undefined;
+      } else if (n == 1) {
+        inner_table_end = table_end;
+      }
+
+      i = table_end + 1;
     }
   }
 
-  /*
-  console.log(
-    tables
-      .map(x => (x.length == 2 ? x.join("\n" + "-".repeat(100)) : x))
-      .join("\n" + "#".repeat(100))
-  );
+  for (let i in tables) {
+    let input = tables[i];
 
-  console.log(tables.map(x => x.length == 2));
-  */
+    let tbody_index = input.indexOf("<tbody>");
+    let thead_index = input.indexOf("<thead>");
+    if (~thead_index && ~tbody_index) {
+      let head = input.slice(thead_index + 7, tbody_index);
+      let body = input.slice(tbody_index + 7);
+      if (~head.indexOf("Functions") && ~head.indexOf("Modes")) {
+        let next_body = body.indexOf("<tbody>");
+        if (~next_body) body = body.slice(0, next_body); // ignore fortran docs
+
+        tables[i] = { is_def: true, body };
+      }
+    } else {
+      tables[i] = { is_def: false, body: input };
+    }
+  }
 
   let pairs = [];
   let orphans = [];
 
   for (let i = 0; i < tables.length; i++) {
-    if (tables[i].length == 2) {
-      if (tables[i + 1] && tables[i + 1].length != 2) {
-        pairs.push([tables[i], tables[i + 1]]);
+    if (tables[i].is_def) {
+      if (tables[i + 1] && !tables[i + 1].is_def) {
+        pairs.push([tables[i].body, tables[i + 1].body]);
         i++;
       } else {
         // console.log("\n\n\ntable has no explaination");
@@ -136,15 +187,12 @@ function get_table_data(input) {
         // console.log(tables[i + 1]);
       }
     } else {
-      orphans.push(tables[i]);
+      orphans.push(tables[i].body);
     }
   }
 
   for ([raw_signatures, raw_explainations] of pairs) {
-    let signatures = get_function_signatures(
-      raw_signatures[0],
-      raw_signatures[1]
-    );
+    let signatures = get_function_signatures(raw_signatures);
 
     ammend_parameter_explainations(signatures, raw_explainations);
 
@@ -156,16 +204,11 @@ function get_table_data(input) {
     }
   }
 
-  // TODO: orphans
+  // TODO: handle orphans
+  // console.log(orphans);
 }
 
-function get_function_signatures(table_header, table_body) {
-  if (!(~table_header.indexOf("Functions") && ~table_header.indexOf("Modes"))) {
-    console.error("skipping a table:");
-    console.error(table_header);
-    console.error(table_body);
-  }
-
+function get_function_signatures(table_body) {
   let rows = table_body
     .trim()
     .split(/<tr[^>]*>/)
@@ -225,6 +268,7 @@ function get_function_signatures(table_header, table_body) {
 
 function ammend_parameter_explainations(signatures, explainations) {
   explainations = explainations.replace(/&nbsp;/g, " ");
+
   let rows = explainations
     .split(/<tr[^>]*>/g)
     .map(x => x.trim())
@@ -233,9 +277,18 @@ function ammend_parameter_explainations(signatures, explainations) {
   for (let row of rows) {
     let cells = row
       .split(/<td[^>]*>/g)
-      .map(x => x.replace(/<tt>([^<]+)<\/tt>/g, "`$1`"))
+      .map(x => {
+        let i = x.indexOf("</td");
+        if (~i) return x.slice(0, i);
+        return x;
+      })
+      .map(x => x.replace(/<(?:tt|zz)>([^<]+)<\/(?:tt|zz)>/g, "`$1`"))
       .map(x => x.trim())
+      .filter(x => x)
+      .map(x => x.replace(/<<<(\d+)>>>/g, (_, table_index) => ""))
       .map(x => x.replace(/^`([^`]*)`$/, "$1"))
+      .map(x => x.replace(/<(\/)?i>/g, "_"))
+      .map(x => x.replace(/<(\/)?(br|p)>/g, ""))
       .map(x => x.trim())
       .filter(x => x)
       .map(x =>

@@ -641,7 +641,7 @@ extern "C" {
     /// 
     /// # Arguments
     /// 
-    /// &rarr; `option`(`int`): The option to configure, currently one of `CG_CONFIG_ERROR`, `CG_CONFIG_COMPRESS`, `CG_CONFIG_SET_PATH`, `CG_CONFIG_ADD_PATH`, `CG_CONFIG_FILE_TYPE`, `CG_CONFIG_RIND_INDEX`, `CG_CONFIG_HDF5_COMPRESS`, or `CG_CONFIG_HDF5_MPI_COMM` as defined in <i>cgnslib.h</i>.
+    /// &rarr; `option`(`int`): The option to configure, currently one of `CG_CONFIG_ERROR`, `CG_CONFIG_COMPRESS`, `CG_CONFIG_SET_PATH`, `CG_CONFIG_ADD_PATH`, `CG_CONFIG_FILE_TYPE`, `CG_CONFIG_RIND_INDEX`, `CG_CONFIG_HDF5_COMPRESS`, or `CG_CONFIG_HDF5_MPI_COMM` as defined in _cgnslib.h_.
     /// 
     /// &rarr; `value`(`void*`): The value to set, type cast as `void *`.
     pub fn cg_configure(
@@ -944,7 +944,7 @@ extern "C" {
     /// 
     /// &larr; `zonename`(`char*`): Name of the zone.
     /// 
-    /// &larr; `size`(`cgsize_t*`): Number of vertices, cells, and boundary vertices in each (<i>index</i>)-dimension.  For structured grids, the dimensions have unit stride in the array (e.g., `[NVertexI, NVertexJ, NVertexK, NCellI, NCellJ, NCellK, NBoundVertexI, NBoundVertexJ, NBoundVertexK]`). <p> Note that for unstructured grids, the number of cells is the number of highest order elements. Thus, in three dimensions it's the number of 3-D cells, and in two dimensions it's the number of 2-D cells. <p> Also for unstructured grids, if the nodes are sorted between internal nodes and boundary nodes, the optional parameter `NBoundVertex` must be set equal to the number of boundary nodes. By default, `NBoundVertex` equals zero, meaning that the nodes are unsorted. <p> Note that a non-zero value for `NBoundVertex` only applies to unstructured grids. For structured grids, the `NBoundVertex` parameter always equals 0 in all directions.<br><br> <table cellspacing=0 cellpadding=0 noborder>
+    /// &larr; `size`(`cgsize_t*`): Number of vertices, cells, and boundary vertices in each (_index_)-dimension.  For structured grids, the dimensions have unit stride in the array (e.g., `[NVertexI, NVertexJ, NVertexK, NCellI, NCellJ, NCellK, NBoundVertexI, NBoundVertexJ, NBoundVertexK]`).  Note that for unstructured grids, the number of cells is the number of highest order elements. Thus, in three dimensions it's the number of 3-D cells, and in two dimensions it's the number of 2-D cells.  Also for unstructured grids, if the nodes are sorted between internal nodes and boundary nodes, the optional parameter `NBoundVertex` must be set equal to the number of boundary nodes. By default, `NBoundVertex` equals zero, meaning that the nodes are unsorted.  Note that a non-zero value for `NBoundVertex` only applies to unstructured grids. For structured grids, the `NBoundVertex` parameter always equals 0 in all directions.
     pub fn cg_zone_read(
         fn_: ::std::os::raw::c_int,
         B: ::std::os::raw::c_int,
@@ -968,7 +968,7 @@ extern "C" {
     /// 
     /// &rarr; `Z`(`int`): Zone index number, where 1 &le; `Z` &le; `nzones`.
     /// 
-    /// &larr; `zonetype`(`ZoneType_t*`): undefined
+    /// &larr; `zonetype`(`ZoneType_t*`): Type of the zone. The admissible types are `Structured` and `Unstructured`.
     pub fn cg_zone_type(
         file_number: ::std::os::raw::c_int,
         B: ::std::os::raw::c_int,
@@ -999,9 +999,9 @@ extern "C" {
     /// 
     /// &rarr; `zonename`(`char*`): Name of the zone.
     /// 
-    /// &rarr; `size`(`cgsize_t*`): Number of vertices, cells, and boundary vertices in each (<i>index</i>)-dimension.  For structured grids, the dimensions have unit stride in the array (e.g., `[NVertexI, NVertexJ, NVertexK, NCellI, NCellJ, NCellK, NBoundVertexI, NBoundVertexJ, NBoundVertexK]`). <p> Note that for unstructured grids, the number of cells is the number of highest order elements. Thus, in three dimensions it's the number of 3-D cells, and in two dimensions it's the number of 2-D cells. <p> Also for unstructured grids, if the nodes are sorted between internal nodes and boundary nodes, the optional parameter `NBoundVertex` must be set equal to the number of boundary nodes. By default, `NBoundVertex` equals zero, meaning that the nodes are unsorted. <p> Note that a non-zero value for `NBoundVertex` only applies to unstructured grids. For structured grids, the `NBoundVertex` parameter always equals 0 in all directions.<br><br> <table cellspacing=0 cellpadding=0 noborder>
+    /// &rarr; `size`(`cgsize_t*`): Number of vertices, cells, and boundary vertices in each (_index_)-dimension.  For structured grids, the dimensions have unit stride in the array (e.g., `[NVertexI, NVertexJ, NVertexK, NCellI, NCellJ, NCellK, NBoundVertexI, NBoundVertexJ, NBoundVertexK]`).  Note that for unstructured grids, the number of cells is the number of highest order elements. Thus, in three dimensions it's the number of 3-D cells, and in two dimensions it's the number of 2-D cells.  Also for unstructured grids, if the nodes are sorted between internal nodes and boundary nodes, the optional parameter `NBoundVertex` must be set equal to the number of boundary nodes. By default, `NBoundVertex` equals zero, meaning that the nodes are unsorted.  Note that a non-zero value for `NBoundVertex` only applies to unstructured grids. For structured grids, the `NBoundVertex` parameter always equals 0 in all directions.
     /// 
-    /// &rarr; `zonetype`(`ZoneType_t`): undefined
+    /// &rarr; `zonetype`(`ZoneType_t`): Type of the zone. The admissible types are `Structured` and `Unstructured`.
     /// 
     /// &larr; `Z`(`int*`): Zone index number, where 1 &le; `Z` &le; `nzones`.
     pub fn cg_zone_write(
@@ -1028,7 +1028,7 @@ extern "C" {
     /// 
     /// &rarr; `Z`(`int`): Zone index number, where 1 &le; `Z` &le; `nzones`.
     /// 
-    /// &larr; `index_dim`(`int*`): undefined
+    /// &larr; `index_dim`(`int*`): Index dimension for the zone. For Structured zones, this will be the base cell dimension and for Unstructured zones it will be 1
     pub fn cg_index_dim(
         fn_: ::std::os::raw::c_int,
         B: ::std::os::raw::c_int,
@@ -2494,9 +2494,9 @@ extern "C" {
     /// 
     /// &rarr; `S`(`int`): Flow solution index number, where 1 &le; `S` &le; `nsols`.
     /// 
-    /// &larr; `data_dim`(`int*`): Number of dimensions defining the solution data. If a point set has been defined, this will be 1, otherwise this will be the current zone index dimension.</td>
+    /// &larr; `data_dim`(`int*`): Number of dimensions defining the solution data. If a point set has been defined, this will be 1, otherwise this will be the current zone index dimension.
     /// 
-    /// &larr; `dim_vals`(`cgsize_t*`): The array of `data_dim` dimensions for the solution data.</td>
+    /// &larr; `dim_vals`(`cgsize_t*`): The array of `data_dim` dimensions for the solution data.
     pub fn cg_sol_size(
         fn_: ::std::os::raw::c_int,
         B: ::std::os::raw::c_int,
@@ -2927,9 +2927,9 @@ extern "C" {
     /// 
     /// &rarr; `S`(`int`): ZoneSubRegion index number, where 1 &le; `S` &le; `nsubregs`.
     /// 
-    /// &larr; `regname`(`char*`): Name of the <zz>ZoneSubRegion_t</tt> node,</td>
+    /// &larr; `regname`(`char*`): Name of the `ZoneSubRegion_t` node,
     /// 
-    /// &larr; `dimension`(`int*`): Dimensionality of the subregion, 1 for lines, 2 for faces, 3 for volumes,</td>
+    /// &larr; `dimension`(`int*`): Dimensionality of the subregion, 1 for lines, 2 for faces, 3 for volumes,
     /// 
     /// &larr; `location`(`GridLocation_t*`): Grid location used in the definition of the point set. The currently admissible locations are `Vertex` and `CellCenter`.
     /// 
@@ -2937,9 +2937,9 @@ extern "C" {
     /// 
     /// &larr; `npnts`(`cgsize_t*`): Number of points defining the interface for the subregion data. For a `ptset_type` of `PointRange`, `npnts` is always two. For a `ptset_type` of `PointList`, `npnts` is the number of points in the `PointList`.
     /// 
-    /// &larr; `bcname_len`(`int*`): String length of `bcname`.</td>
+    /// &larr; `bcname_len`(`int*`): String length of `bcname`.
     /// 
-    /// &larr; `gcname_len`(`int*`): String length of `gcname`.</td>
+    /// &larr; `gcname_len`(`int*`): String length of `gcname`.
     pub fn cg_subreg_info(
         fn_: ::std::os::raw::c_int,
         B: ::std::os::raw::c_int,
@@ -2997,7 +2997,7 @@ extern "C" {
     /// 
     /// &rarr; `S`(`int`): ZoneSubRegion index number, where 1 &le; `S` &le; `nsubregs`.
     /// 
-    /// &larr; `bcname`(`char*`): The name of a `BC_t` node which defines the subregion.</td>
+    /// &larr; `bcname`(`char*`): The name of a `BC_t` node which defines the subregion.
     pub fn cg_subreg_bcname_read(
         fn_: ::std::os::raw::c_int,
         B: ::std::os::raw::c_int,
@@ -3023,7 +3023,7 @@ extern "C" {
     /// 
     /// &rarr; `S`(`int`): ZoneSubRegion index number, where 1 &le; `S` &le; `nsubregs`.
     /// 
-    /// &larr; `gcname`(`char*`): The name of a `GridConnectivity_t` or `GridConnectivity1to1_t` node which defines the subregion.</td>
+    /// &larr; `gcname`(`char*`): The name of a `GridConnectivity_t` or `GridConnectivity1to1_t` node which defines the subregion.
     pub fn cg_subreg_gcname_read(
         fn_: ::std::os::raw::c_int,
         B: ::std::os::raw::c_int,
@@ -3049,7 +3049,7 @@ extern "C" {
     /// 
     /// &rarr; `char `(`const`): undefined
     /// 
-    /// &rarr; `dimension`(`int`): Dimensionality of the subregion, 1 for lines, 2 for faces, 3 for volumes,</td>
+    /// &rarr; `dimension`(`int`): Dimensionality of the subregion, 1 for lines, 2 for faces, 3 for volumes,
     /// 
     /// &rarr; `location`(`GridLocation_t`): Grid location used in the definition of the point set. The currently admissible locations are `Vertex` and `CellCenter`.
     /// 
@@ -3090,7 +3090,7 @@ extern "C" {
     /// 
     /// &rarr; `char `(`const`): undefined
     /// 
-    /// &rarr; `dimension`(`int`): Dimensionality of the subregion, 1 for lines, 2 for faces, 3 for volumes,</td>
+    /// &rarr; `dimension`(`int`): Dimensionality of the subregion, 1 for lines, 2 for faces, 3 for volumes,
     /// 
     /// &rarr; `char `(`const`): undefined
     /// 
@@ -3122,7 +3122,7 @@ extern "C" {
     /// 
     /// &rarr; `char `(`const`): undefined
     /// 
-    /// &rarr; `dimension`(`int`): Dimensionality of the subregion, 1 for lines, 2 for faces, 3 for volumes,</td>
+    /// &rarr; `dimension`(`int`): Dimensionality of the subregion, 1 for lines, 2 for faces, 3 for volumes,
     /// 
     /// &rarr; `char `(`const`): undefined
     /// 
@@ -3177,7 +3177,7 @@ extern "C" {
     /// 
     /// &rarr; `ZC`(`int`): Zone grid connectivity index number, where 1 &le; `ZC` &le; `nzconns`.
     /// 
-    /// &larr; `zcname`(`char*`): Name of the `ZoneGridConnectivity_t` node,</td>
+    /// &larr; `zcname`(`char*`): Name of the `ZoneGridConnectivity_t` node,
     pub fn cg_zconn_read(
         fn_: ::std::os::raw::c_int,
         B: ::std::os::raw::c_int,
@@ -4286,9 +4286,9 @@ extern "C" {
     /// 
     /// &rarr; `D`(`int`): Discrete data index number, where 1 &le; `D` &le; `ndiscrete`.
     /// 
-    /// &larr; `data_dim`(`int*`): Number of dimensions defining the discrete data. If a point set has been defined, this will be 1, otherwise this will be the current zone index dimension.</td>
+    /// &larr; `data_dim`(`int*`): Number of dimensions defining the discrete data. If a point set has been defined, this will be 1, otherwise this will be the current zone index dimension.
     /// 
-    /// &larr; `dim_vals`(`cgsize_t*`): The array of `data_dim` dimensions for the discrete data.</td>
+    /// &larr; `dim_vals`(`cgsize_t*`): The array of `data_dim` dimensions for the discrete data.
     pub fn cg_discrete_size(
         fn_: ::std::os::raw::c_int,
         B: ::std::os::raw::c_int,
@@ -5155,9 +5155,9 @@ extern "C" {
     /// 
     /// # Arguments
     /// 
-    /// &rarr; `fn`(`int`): CGNS file index number. <br><br>
+    /// &rarr; `fn`(`int`): CGNS file index number.
     /// 
-    /// &rarr; `B`(`int`): Base index number, where 1 &le; `B` &le; `nbases`. <br><br>
+    /// &rarr; `B`(`int`): Base index number, where 1 &le; `B` &le; `nbases`.
     pub fn cg_goto(
         file_number: ::std::os::raw::c_int,
         B: ::std::os::raw::c_int,
@@ -5180,7 +5180,7 @@ extern "C" {
     /// 
     /// # Arguments
     /// 
-    /// &rarr; `fn`(`int`): CGNS file index number. <br><br>
+    /// &rarr; `fn`(`int`): CGNS file index number.
     pub fn cg_gorel(file_number: ::std::os::raw::c_int, ...) -> ::std::os::raw::c_int;
 }
 extern "C" {
@@ -5195,7 +5195,7 @@ extern "C" {
     /// 
     /// # Arguments
     /// 
-    /// &rarr; `fn`(`int`): CGNS file index number. <br><br>
+    /// &rarr; `fn`(`int`): CGNS file index number.
     /// 
     /// &rarr; `char `(`const`): undefined
     pub fn cg_gopath(
@@ -5212,15 +5212,15 @@ extern "C" {
     /// 
     /// # Arguments
     /// 
-    /// &rarr; `fn`(`int`): CGNS file index number. <br><br>
+    /// &rarr; `fn`(`int`): CGNS file index number.
     /// 
-    /// &rarr; `B`(`int`): Base index number, where 1 &le; `B` &le; `nbases`. <br><br>
+    /// &rarr; `B`(`int`): Base index number, where 1 &le; `B` &le; `nbases`.
     /// 
-    /// &rarr; `depth`(`int`): Depth of the path list. The maximum depth is defined in <i>cgnslib.h</i> by `CG_MAX_GOTO_DEPTH`, and is currently equal to 20. <br><br>
+    /// &rarr; `depth`(`int`): Depth of the path list. The maximum depth is defined in _cgnslib.h_ by `CG_MAX_GOTO_DEPTH`, and is currently equal to 20.
     /// 
-    /// &rarr; `label`(`char**`): Array of node labels for the path. This argument may be passed as `NULL` to `cg_where()`, otherwise it must be dimensioned by the calling program. The maximum size required is `label[MAX_GO_TO_DEPTH][33]`. You may call `cg_where()` with both `label` and `index` set to `NULL` in order to get the current depth, then dimension to that value. <br><br>
+    /// &rarr; `label`(`char**`): Array of node labels for the path. This argument may be passed as `NULL` to `cg_where()`, otherwise it must be dimensioned by the calling program. The maximum size required is `label[MAX_GO_TO_DEPTH][33]`. You may call `cg_where()` with both `label` and `index` set to `NULL` in order to get the current depth, then dimension to that value.
     /// 
-    /// &rarr; `index`(`int*`): Array of node indices for the path. This argument may be passed as `NULL` to `cg_where()`, otherwise it must be dimensioned by the calling program. The maximum size required is `index[MAX_GO_TO_DEPTH]`. You may call `cg_where()` with both `label` and `index` set to `NULL` in order to get the current depth, then dimension to that value. <br><br>
+    /// &rarr; `index`(`int*`): Array of node indices for the path. This argument may be passed as `NULL` to `cg_where()`, otherwise it must be dimensioned by the calling program. The maximum size required is `index[MAX_GO_TO_DEPTH]`. You may call `cg_where()` with both `label` and `index` set to `NULL` in order to get the current depth, then dimension to that value.
     pub fn cg_golist(
         file_number: ::std::os::raw::c_int,
         B: ::std::os::raw::c_int,
@@ -5238,15 +5238,15 @@ extern "C" {
     /// 
     /// # Arguments
     /// 
-    /// &larr; `fn`(`int*`): CGNS file index number. <br><br>
+    /// &larr; `fn`(`int*`): CGNS file index number.
     /// 
-    /// &larr; `B`(`int*`): Base index number, where 1 &le; `B` &le; `nbases`. <br><br>
+    /// &larr; `B`(`int*`): Base index number, where 1 &le; `B` &le; `nbases`.
     /// 
-    /// &larr; `depth`(`int*`): Depth of the path list. The maximum depth is defined in <i>cgnslib.h</i> by `CG_MAX_GOTO_DEPTH`, and is currently equal to 20. <br><br>
+    /// &larr; `depth`(`int*`): Depth of the path list. The maximum depth is defined in _cgnslib.h_ by `CG_MAX_GOTO_DEPTH`, and is currently equal to 20.
     /// 
-    /// &larr; `label`(`char**`): Array of node labels for the path. This argument may be passed as `NULL` to `cg_where()`, otherwise it must be dimensioned by the calling program. The maximum size required is `label[MAX_GO_TO_DEPTH][33]`. You may call `cg_where()` with both `label` and `index` set to `NULL` in order to get the current depth, then dimension to that value. <br><br>
+    /// &larr; `label`(`char**`): Array of node labels for the path. This argument may be passed as `NULL` to `cg_where()`, otherwise it must be dimensioned by the calling program. The maximum size required is `label[MAX_GO_TO_DEPTH][33]`. You may call `cg_where()` with both `label` and `index` set to `NULL` in order to get the current depth, then dimension to that value.
     /// 
-    /// &larr; `index`(`int*`): Array of node indices for the path. This argument may be passed as `NULL` to `cg_where()`, otherwise it must be dimensioned by the calling program. The maximum size required is `index[MAX_GO_TO_DEPTH]`. You may call `cg_where()` with both `label` and `index` set to `NULL` in order to get the current depth, then dimension to that value. <br><br>
+    /// &larr; `index`(`int*`): Array of node indices for the path. This argument may be passed as `NULL` to `cg_where()`, otherwise it must be dimensioned by the calling program. The maximum size required is `index[MAX_GO_TO_DEPTH]`. You may call `cg_where()` with both `label` and `index` set to `NULL` in order to get the current depth, then dimension to that value.
     pub fn cg_where(
         file_number: *mut ::std::os::raw::c_int,
         B: *mut ::std::os::raw::c_int,
@@ -6208,48 +6208,16 @@ extern "C" {
     pub fn cg_ptset_read(pnts: *mut ::std::os::raw::c_int) -> ::std::os::raw::c_int;
 }
 extern "C" {
-    /// missing summary
-    /// 
-    /// # Modes
-    /// 
-    /// [ r - m ]
-    /// 
-    /// # Arguments
-    /// 
-    /// &larr; `path_length`(`int*`): Length of the path name of the linked node. The value 0 is returned if the node is not a link.
     pub fn cg_is_link(path_length: *mut ::std::os::raw::c_int) -> ::std::os::raw::c_int;
 }
 extern "C" {
     /// Get path information for a link at the current location
-    /// 
-    /// # Modes
-    /// 
-    /// [ r - m ]
-    /// 
-    /// # Arguments
-    /// 
-    /// &larr; `filename`(`char**`): Name of the linked file, or empty string if the link is within the same file.
-    /// 
-    /// &larr; `link_path`(`char**`): Path name of the node which the link points to.
     pub fn cg_link_read(
         filename: *mut *mut ::std::os::raw::c_char,
         link_path: *mut *mut ::std::os::raw::c_char,
     ) -> ::std::os::raw::c_int;
 }
 extern "C" {
-    /// missing summary
-    /// 
-    /// # Modes
-    /// 
-    /// [ - w m ]
-    /// 
-    /// # Arguments
-    /// 
-    /// &rarr; `nodename`(`char*`): Name of the link node to create, e.g., `GridCoordinates`.
-    /// 
-    /// &rarr; `filename`(`char*`): Name of the linked file, or empty string if the link is within the same file.
-    /// 
-    /// &rarr; `name_in_file`(`char*`): Path name of the node which the link points to. This can be a simple or a compound name, e.g., `Base/Zone 1/GridCoordinates`.
     pub fn cg_link_write(
         nodename: *const ::std::os::raw::c_char,
         filename: *const ::std::os::raw::c_char,
