@@ -2,6 +2,7 @@ const input = require("fs")
   .readFileSync(0)
   .toString();
 
+const midlevel_docs_url = "https://cgns.github.io/CGNS_docs_current/midlevel/";
 const dest_filename = "../src/cgns.rs";
 let dest = require("fs")
   .readFileSync(dest_filename)
@@ -14,19 +15,21 @@ get_table_data(input);
 apply_docs();
 
 function create_comment_from_doc(documentation) {
-  let res = [""];
+  let res = [];
 
-  if (documentation.short) res.push(documentation.short);
-  if (documentation.modes)
-    res.push(`modes: [ ${documentation.modes.join(" ")} ]`);
+  res.push(documentation.short || "missing summary");
+  if (documentation.modes) {
+    res.push(`# Modes`);
+    res.push("[ " + documentation.modes.join(" ") + " ]");
+  }
 
   // TODO: use `documentation.variadic`?
 
   if (documentation.args) {
-    res.push("arguments: ");
+    res.push("# Arguments");
     for (arg of documentation.args) {
       res.push(
-        (arg.direction == "in" ? "->" : "<-") +
+        (arg.direction == "in" ? "&rarr;" : "&larr;") +
           " `" +
           arg.name +
           "`(`" +
@@ -37,7 +40,13 @@ function create_comment_from_doc(documentation) {
     }
   }
 
-  return res;
+  let res_padded = [];
+  for (line of res) {
+    res_padded.push("");
+    res_padded.push(line);
+  }
+
+  return res_padded;
 }
 
 function apply_docs() {
@@ -49,6 +58,11 @@ function apply_docs() {
     let documentation_for_function = create_comment_from_doc(
       docs[function_name]
     ).join(white_space + "/// ");
+
+    documentation_for_function = documentation_for_function.replace(
+      /<a href="([^"]+)">/g,
+      "<a href=" + midlevel_docs_url + "$1>"
+    );
 
     dest = [
       dest.slice(0, line_start),
