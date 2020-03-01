@@ -478,7 +478,7 @@ extern "C" {
     /// 
     /// # Arguments
     /// 
-    /// &rarr; `char `(`const`): undefined
+    /// &rarr; `filename`(`const char*`): Name of the CGNS file, including path name if necessary. There is no limit on the length of this character variable.
     /// 
     /// &larr; `file_type`(`int*`): Type of CGNS file. This will typically be either `CG_FILE_ADF` or `CG_FILE_HDF5` depending on the underlying file format. However, note that when built in 32-bit, there is also an option to create a Version 2.5 CGNS file by setting the file type to `CG_FILE_ADF2`.
     pub fn cg_is_cgns(
@@ -560,7 +560,7 @@ extern "C" {
     /// 
     /// &rarr; `fn`(`int`): CGNS file index number.
     /// 
-    /// &rarr; `char `(`const`): undefined
+    /// &rarr; `filename`(`const char*`): Name of the CGNS file, including path name if necessary. There is no limit on the length of this character variable.
     /// 
     /// &rarr; `file_type`(`int`): Type of CGNS file. This will typically be either `CG_FILE_ADF` or `CG_FILE_HDF5` depending on the underlying file format. However, note that when built in 32-bit, there is also an option to create a Version 2.5 CGNS file by setting the file type to `CG_FILE_ADF2`.
     /// 
@@ -657,8 +657,6 @@ extern "C" {
     /// [ r w m ]
     /// 
     /// # Arguments
-    /// 
-    /// &rarr; `(`(`void`): undefined
     pub fn cg_error_handler(
         arg1: ::std::option::Option<
             unsafe extern "C" fn(arg1: ::std::os::raw::c_int, arg2: *mut ::std::os::raw::c_char),
@@ -698,7 +696,7 @@ extern "C" {
     /// 
     /// # Arguments
     /// 
-    /// &rarr; `char `(`const`): undefined
+    /// &rarr; `path`(`const char*`): Pathname to search for linked to files when opening a file with external links.
     pub fn cg_set_path(path: *const ::std::os::raw::c_char) -> ::std::os::raw::c_int;
 }
 extern "C" {
@@ -710,7 +708,7 @@ extern "C" {
     /// 
     /// # Arguments
     /// 
-    /// &rarr; `char `(`const`): undefined
+    /// &rarr; `path`(`const char*`): Pathname to search for linked to files when opening a file with external links.
     pub fn cg_add_path(path: *const ::std::os::raw::c_char) -> ::std::os::raw::c_int;
 }
 extern "C" {
@@ -1560,7 +1558,7 @@ extern "C" {
     /// 
     /// &rarr; `G`(`int`): Grid index number, where 1 &le; `G` &le; `ngrids`.
     /// 
-    /// &larr; `GridCoordName`(`char*`): undefined
+    /// &larr; `GridCoordName`(`char*`): ?
     pub fn cg_grid_read(
         file_number: ::std::os::raw::c_int,
         B: ::std::os::raw::c_int,
@@ -1584,7 +1582,7 @@ extern "C" {
     /// 
     /// &rarr; `Z`(`int`): Zone index number, where 1 &le; `Z` &le; `nzones`.
     /// 
-    /// &rarr; `GridCoordName`(`char*`): undefined
+    /// &rarr; `GridCoordName`(`char*`): ?
     /// 
     /// &larr; `G`(`int*`): Grid index number, where 1 &le; `G` &le; `ngrids`.
     pub fn cg_grid_write(
@@ -2576,7 +2574,7 @@ extern "C" {
     /// 
     /// &rarr; `Z`(`int`): Zone index number, where 1 &le; `Z` &le; `nzones`.
     /// 
-    /// &rarr; `char `(`const`): undefined
+    /// &rarr; `solname`(`const char*`): Name of the flow solution.
     /// 
     /// &rarr; `location`(`GridLocation_t`): Grid location where the solution is recorded. The current admissible locations are `Vertex`, `CellCenter`, `IFaceCenter`, `JFaceCenter`, and `KFaceCenter`.
     /// 
@@ -2584,7 +2582,7 @@ extern "C" {
     /// 
     /// &rarr; `npnts`(`cgsize_t`): Number of points defining the interface in the current solution. For a `ptset_type` of `PointRange`, `npnts` is always two. For a `ptset_type` of `PointList`, `npnts` is the number of points in the `PointList`.
     /// 
-    /// &rarr; `cgsize_t `(`const`): undefined
+    /// &rarr; `pnts`(`const cgsize_t*`): Array of points defining the interface in the current solution.
     /// 
     /// &larr; `S`(`int*`): Flow solution index number, where 1 &le; `S` &le; `nsols`.
     pub fn cg_sol_ptset_write(
@@ -3047,7 +3045,7 @@ extern "C" {
     /// 
     /// &rarr; `Z`(`int`): Zone index number, where 1 &le; `Z` &le; `nzones`.
     /// 
-    /// &rarr; `char `(`const`): undefined
+    /// &rarr; `regname`(`const char*`): Name of the `ZoneSubRegion_t` node,
     /// 
     /// &rarr; `dimension`(`int`): Dimensionality of the subregion, 1 for lines, 2 for faces, 3 for volumes,
     /// 
@@ -3057,7 +3055,7 @@ extern "C" {
     /// 
     /// &rarr; `npnts`(`cgsize_t`): Number of points defining the interface for the subregion data. For a `ptset_type` of `PointRange`, `npnts` is always two. For a `ptset_type` of `PointList`, `npnts` is the number of points in the `PointList`.
     /// 
-    /// &rarr; `cgsize_t `(`const`): undefined
+    /// &rarr; `pnts`(`const cgsize_t*`): Array of points defining the interface  for the subregion data.
     /// 
     /// &larr; `S`(`int*`): ZoneSubRegion index number, where 1 &le; `S` &le; `nsubregs`.
     pub fn cg_subreg_ptset_write(
@@ -3088,11 +3086,11 @@ extern "C" {
     /// 
     /// &rarr; `Z`(`int`): Zone index number, where 1 &le; `Z` &le; `nzones`.
     /// 
-    /// &rarr; `char `(`const`): undefined
+    /// &rarr; `regname`(`const char*`): Name of the `ZoneSubRegion_t` node,
     /// 
     /// &rarr; `dimension`(`int`): Dimensionality of the subregion, 1 for lines, 2 for faces, 3 for volumes,
     /// 
-    /// &rarr; `char `(`const`): undefined
+    /// &rarr; `bcname`(`const char*`): The name of a `BC_t` node which defines the subregion.
     /// 
     /// &larr; `S`(`int*`): ZoneSubRegion index number, where 1 &le; `S` &le; `nsubregs`.
     pub fn cg_subreg_bcname_write(
@@ -3120,11 +3118,11 @@ extern "C" {
     /// 
     /// &rarr; `Z`(`int`): Zone index number, where 1 &le; `Z` &le; `nzones`.
     /// 
-    /// &rarr; `char `(`const`): undefined
+    /// &rarr; `regname`(`const char*`): Name of the `ZoneSubRegion_t` node,
     /// 
     /// &rarr; `dimension`(`int`): Dimensionality of the subregion, 1 for lines, 2 for faces, 3 for volumes,
     /// 
-    /// &rarr; `char `(`const`): undefined
+    /// &rarr; `gcname`(`const char*`): The name of a `GridConnectivity_t` or `GridConnectivity1to1_t` node which defines the subregion.
     /// 
     /// &larr; `S`(`int*`): ZoneSubRegion index number, where 1 &le; `S` &le; `nsubregs`.
     pub fn cg_subreg_gcname_write(
@@ -3201,7 +3199,7 @@ extern "C" {
     /// 
     /// &rarr; `Z`(`int`): Zone index number, where 1 &le; `Z` &le; `nzones`.
     /// 
-    /// &rarr; `char `(`const`): undefined
+    /// &rarr; `zcname`(`const char*`): Name of the `ZoneGridConnectivity_t` node,
     /// 
     /// &larr; `ZC`(`int*`): Zone grid connectivity index number, where 1 &le; `ZC` &le; `nzconns`.
     pub fn cg_zconn_write(
@@ -4368,7 +4366,7 @@ extern "C" {
     /// 
     /// &rarr; `Z`(`int`): Zone index number, where 1 &le; `Z` &le; `nzones`.
     /// 
-    /// &rarr; `char `(`const`): undefined
+    /// &rarr; `DiscreteName`(`const char*`): Name of `DiscreteData_t` data structure.
     /// 
     /// &rarr; `location`(`GridLocation_t`): Grid location where the discrete data is recorded. The current admissible locations are `Vertex`, `CellCenter`, `IFaceCenter`, `JFaceCenter`, and `KFaceCenter`.
     /// 
@@ -4376,7 +4374,7 @@ extern "C" {
     /// 
     /// &rarr; `npnts`(`cgsize_t`): Number of points defining the interface for the discrete data. For a `ptset_type` of `PointRange`, `npnts` is always two. For a `ptset_type` of `PointList`, `npnts` is the number of points in the list.
     /// 
-    /// &rarr; `cgsize_t `(`const`): undefined
+    /// &rarr; `pnts`(`const cgsize_t*`): Array of points defining the interface for the discrete data.
     /// 
     /// &larr; `D`(`int*`): Discrete data index number, where 1 &le; `D` &le; `ndiscrete`.
     pub fn cg_discrete_ptset_write(
@@ -5155,9 +5153,9 @@ extern "C" {
     /// 
     /// # Arguments
     /// 
-    /// &rarr; `fn`(`int`): CGNS file index number.
+    /// &rarr; `fn`(`int`): CGNS file index number. 
     /// 
-    /// &rarr; `B`(`int`): Base index number, where 1 &le; `B` &le; `nbases`.
+    /// &rarr; `B`(`int`): Base index number, where 1 &le; `B` &le; `nbases`. 
     pub fn cg_goto(
         file_number: ::std::os::raw::c_int,
         B: ::std::os::raw::c_int,
@@ -5180,7 +5178,7 @@ extern "C" {
     /// 
     /// # Arguments
     /// 
-    /// &rarr; `fn`(`int`): CGNS file index number.
+    /// &rarr; `fn`(`int`): CGNS file index number. 
     pub fn cg_gorel(file_number: ::std::os::raw::c_int, ...) -> ::std::os::raw::c_int;
 }
 extern "C" {
@@ -5195,9 +5193,9 @@ extern "C" {
     /// 
     /// # Arguments
     /// 
-    /// &rarr; `fn`(`int`): CGNS file index number.
+    /// &rarr; `fn`(`int`): CGNS file index number. 
     /// 
-    /// &rarr; `char `(`const`): undefined
+    /// &rarr; `path`(`const char*`): The pathname for the node to go to. If a position has been already set, this may be a relative path, otherwise it is an absolute path name, starting with `"/Basename"`, where `Basename` is the base under which you wish to move. 
     pub fn cg_gopath(
         file_number: ::std::os::raw::c_int,
         path: *const ::std::os::raw::c_char,
@@ -5212,15 +5210,15 @@ extern "C" {
     /// 
     /// # Arguments
     /// 
-    /// &rarr; `fn`(`int`): CGNS file index number.
+    /// &rarr; `fn`(`int`): CGNS file index number. 
     /// 
-    /// &rarr; `B`(`int`): Base index number, where 1 &le; `B` &le; `nbases`.
+    /// &rarr; `B`(`int`): Base index number, where 1 &le; `B` &le; `nbases`. 
     /// 
-    /// &rarr; `depth`(`int`): Depth of the path list. The maximum depth is defined in _cgnslib.h_ by `CG_MAX_GOTO_DEPTH`, and is currently equal to 20.
+    /// &rarr; `depth`(`int`): Depth of the path list. The maximum depth is defined in _cgnslib.h_ by `CG_MAX_GOTO_DEPTH`, and is currently equal to 20. 
     /// 
-    /// &rarr; `label`(`char**`): Array of node labels for the path. This argument may be passed as `NULL` to `cg_where()`, otherwise it must be dimensioned by the calling program. The maximum size required is `label[MAX_GO_TO_DEPTH][33]`. You may call `cg_where()` with both `label` and `index` set to `NULL` in order to get the current depth, then dimension to that value.
+    /// &rarr; `label`(`char**`): Array of node labels for the path. This argument may be passed as `NULL` to `cg_where()`, otherwise it must be dimensioned by the calling program. The maximum size required is `label[MAX_GO_TO_DEPTH][33]`. You may call `cg_where()` with both `label` and `index` set to `NULL` in order to get the current depth, then dimension to that value. 
     /// 
-    /// &rarr; `index`(`int*`): Array of node indices for the path. This argument may be passed as `NULL` to `cg_where()`, otherwise it must be dimensioned by the calling program. The maximum size required is `index[MAX_GO_TO_DEPTH]`. You may call `cg_where()` with both `label` and `index` set to `NULL` in order to get the current depth, then dimension to that value.
+    /// &rarr; `index`(`int*`): Array of node indices for the path. This argument may be passed as `NULL` to `cg_where()`, otherwise it must be dimensioned by the calling program. The maximum size required is `index[MAX_GO_TO_DEPTH]`. You may call `cg_where()` with both `label` and `index` set to `NULL` in order to get the current depth, then dimension to that value. 
     pub fn cg_golist(
         file_number: ::std::os::raw::c_int,
         B: ::std::os::raw::c_int,
@@ -5238,15 +5236,15 @@ extern "C" {
     /// 
     /// # Arguments
     /// 
-    /// &larr; `fn`(`int*`): CGNS file index number.
+    /// &larr; `fn`(`int*`): CGNS file index number. 
     /// 
-    /// &larr; `B`(`int*`): Base index number, where 1 &le; `B` &le; `nbases`.
+    /// &larr; `B`(`int*`): Base index number, where 1 &le; `B` &le; `nbases`. 
     /// 
-    /// &larr; `depth`(`int*`): Depth of the path list. The maximum depth is defined in _cgnslib.h_ by `CG_MAX_GOTO_DEPTH`, and is currently equal to 20.
+    /// &larr; `depth`(`int*`): Depth of the path list. The maximum depth is defined in _cgnslib.h_ by `CG_MAX_GOTO_DEPTH`, and is currently equal to 20. 
     /// 
-    /// &larr; `label`(`char**`): Array of node labels for the path. This argument may be passed as `NULL` to `cg_where()`, otherwise it must be dimensioned by the calling program. The maximum size required is `label[MAX_GO_TO_DEPTH][33]`. You may call `cg_where()` with both `label` and `index` set to `NULL` in order to get the current depth, then dimension to that value.
+    /// &larr; `label`(`char**`): Array of node labels for the path. This argument may be passed as `NULL` to `cg_where()`, otherwise it must be dimensioned by the calling program. The maximum size required is `label[MAX_GO_TO_DEPTH][33]`. You may call `cg_where()` with both `label` and `index` set to `NULL` in order to get the current depth, then dimension to that value. 
     /// 
-    /// &larr; `index`(`int*`): Array of node indices for the path. This argument may be passed as `NULL` to `cg_where()`, otherwise it must be dimensioned by the calling program. The maximum size required is `index[MAX_GO_TO_DEPTH]`. You may call `cg_where()` with both `label` and `index` set to `NULL` in order to get the current depth, then dimension to that value.
+    /// &larr; `index`(`int*`): Array of node indices for the path. This argument may be passed as `NULL` to `cg_where()`, otherwise it must be dimensioned by the calling program. The maximum size required is `index[MAX_GO_TO_DEPTH]`. You may call `cg_where()` with both `label` and `index` set to `NULL` in order to get the current depth, then dimension to that value. 
     pub fn cg_where(
         file_number: *mut ::std::os::raw::c_int,
         B: *mut ::std::os::raw::c_int,
@@ -5419,7 +5417,7 @@ extern "C" {
     /// 
     /// # Arguments
     /// 
-    /// &rarr; `Equationstype`(`GoverningEquationsType_t`): undefined
+    /// &rarr; `Equationstype`(`GoverningEquationsType_t`): ?
     pub fn cg_governing_write(Equationstype: GoverningEquationsType_t) -> ::std::os::raw::c_int;
 }
 extern "C" {
